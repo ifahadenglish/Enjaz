@@ -109,24 +109,7 @@ html, body {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* المجموعة الأولى: الأزرار الصغيرة */
-.top-small-buttons {
-    position: fixed;
-    top: 105px;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 250;
-    background: linear-gradient(135deg, #ffffff 0%, #f5fcf9 100%);
-    padding: 8px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 1px solid #e0f0ea;
-    box-shadow: 0 2px 8px rgba(4, 74, 53, 0.08);
-    box-sizing: border-box;
-}
-
+/* أزرار "حفظ/مسح البيانات" أصبحت داخل نافذة الإعدادات (settingsModal) - .small-buttons-grid يبقى مجرد تخطيط flex بلا موضع ثابت */
 .small-buttons-grid {
     display: flex;
     gap: 8px;
@@ -209,7 +192,7 @@ html, body {
 /* المجموعة الثانية: الأزرار الكبيرة */
 .main-buttons-bar {
     position: fixed;
-    top: 158px;
+    top: 105px; /* بعد حذف شريط "حفظ/مسح البيانات" الثابت الذي كان بارتفاع 53px قبل هذا الشريط */
     left: 0;
     right: 0;
     width: 100%;
@@ -285,107 +268,21 @@ html, body {
     transition: none;
 }
 
-/* زر التعبئة الذكية العائم */
-#aiFillFloatingBtn {
-    position: fixed;
-    bottom: 100px; /* فوق شريط التنقل السفلي bottom-nav */
-    left: 30px;
-    width: 100px;
-    height: 100px;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    font-size: 16px;
-    font-weight: 900;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border: 4px solid rgba(255, 255, 255, 0.7);
-    z-index: 1000;
-    overflow: hidden;
-    transform: translateY(0);
-    animation: floatButton 3s ease-in-out infinite;
-    background: linear-gradient(135deg, #9D50BB 0%, #6E48AA 25%, #533D8B 50%, #3A2569 100%);
-    box-shadow: 0 12px 35px rgba(157, 80, 187, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0 25px rgba(157, 80, 187, 0.5);
-}
-
+/* زر التعبئة الذكية - أصبح مدمجاً داخل شريط التنقل السفلي (bottom-nav-fab)، ثابت وليس عائماً */
 #aiFillFloatingBtn .floating-ai-icon {
-    font-size: 38px;
-    animation: magicalPulse 2s infinite;
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
-    margin-bottom: 2px;
+    font-size: 20px;
     color: #FFFFFF;
-    transition: none;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
 
+/* نص الزر مخفي بصرياً (الشكل دائرة أيقونة فقط كما في التصميم) لكنه موجود للـ title/قارئ الشاشة ومنطق التحميل */
 #aiFillFloatingBtn .floating-ai-text {
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    color: #FFFFFF;
-    background: linear-gradient(45deg, #FFFFFF, #F0F0F0, #FFFFFF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    background-size: 200% auto;
-    animation: textShine 2s ease-in-out infinite;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    transition: none;
-}
-
-@keyframes floatButton {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-12px) rotate(3deg); }
-    50% { transform: translateY(0) rotate(0deg); }
-    75% { transform: translateY(-8px) rotate(-3deg); }
-}
-
-@keyframes magicalPulse {
-    0%, 100% { 
-        transform: scale(1) rotate(0deg);
-        filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5)) brightness(1);
-    }
-    25% { 
-        transform: scale(1.15) rotate(10deg);
-        filter: drop-shadow(0 5px 10px rgba(255, 255, 255, 0.6)) brightness(1.2);
-    }
-    50% { 
-        transform: scale(1.1) rotate(-5deg);
-        filter: drop-shadow(0 4px 8px rgba(255, 255, 255, 0.5)) brightness(1.1);
-    }
-    75% { 
-        transform: scale(1.18) rotate(5deg);
-        filter: drop-shadow(0 6px 12px rgba(255, 255, 255, 0.7)) brightness(1.3);
-    }
-}
-
-@keyframes textShine {
-    0%, 100% { 
-        background-position: 0% 50%;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    }
-    50% { 
-        background-position: 100% 50%;
-        text-shadow: 0 3px 6px rgba(255, 255, 255, 0.3), 0 0 10px rgba(255, 255, 255, 0.2);
-    }
-}
-
-#aiFillFloatingBtn.loading {
-    animation: loadingMagicalGlow 1.5s ease-in-out infinite;
-}
-
-@keyframes loadingMagicalGlow {
-    0%, 100% { 
-        box-shadow: 0 12px 35px rgba(0,0,0,0.4), 0 0 0 4px rgba(255, 255, 255, 0.4), 0 0 30px rgba(0,0,0,0.3);
-    }
-    50% { 
-        box-shadow: 0 18px 45px rgba(0,0,0,0.6), 0 0 0 5px rgba(255, 255, 255, 0.7), 0 0 40px rgba(0,0,0,0.5);
-    }
 }
 
 #aiFillFloatingBtn.loading .floating-ai-icon {
@@ -1852,6 +1749,26 @@ button[title]:hover::before {
     filter: brightness(1.05);
 }
 
+/* استثناء أزرار حفظ/مسح بيانات التقرير (منقولة من الشريط الثابت سابقاً) من التنسيق العام لأزرار نافذة الإعدادات */
+#settingsModal #saveTeacherBtn,
+#settingsModal #clearBtn {
+    width: auto;
+    margin-top: 0;
+    padding: 6px 4px;
+}
+#settingsModal #saveTeacherBtn,
+#settingsModal #saveTeacherBtn:hover {
+    background: linear-gradient(135deg, #4f7bff 0%, #3b5bdb 100%);
+    color: white;
+    filter: brightness(1);
+}
+#settingsModal #clearBtn,
+#settingsModal #clearBtn:hover {
+    background: linear-gradient(135deg, #ffd166 0%, #ffc145 100%);
+    color: #5a3e00;
+    filter: brightness(1);
+}
+
 #settingsModal hr {
     margin: 15px 0;
     border: none;
@@ -2491,10 +2408,6 @@ button[title]:hover::before {
 
 /* تحسينات للهواتف المحمولة */
 @media (max-width: 768px) {
-    .top-small-buttons {
-        padding: 6px 15px;
-    }
-    
     .small-buttons-grid {
         gap: 6px;
     }
@@ -2555,20 +2468,6 @@ button[title]:hover::before {
         grid-template-columns: repeat(2, 1fr);
     }
     
-    #aiFillFloatingBtn {
-        width: 85px;
-        height: 85px;
-        bottom: 90px;
-        left: 20px;
-    }
-    
-    #aiFillFloatingBtn .floating-ai-icon {
-        font-size: 32px;
-    }
-    
-    #aiFillFloatingBtn .floating-ai-text {
-        font-size: 12px;
-    }
 }
 
 @media (max-width: 480px) {
@@ -2607,21 +2506,6 @@ button[title]:hover::before {
     
     .main-btn .main-btn-text {
         font-size: 10px;
-    }
-    
-    #aiFillFloatingBtn {
-        width: 75px;
-        height: 75px;
-        bottom: 85px;
-        left: 15px;
-    }
-    
-    #aiFillFloatingBtn .floating-ai-icon {
-        font-size: 28px;
-    }
-    
-    #aiFillFloatingBtn .floating-ai-text {
-        font-size: 11px;
     }
     
     .input-section {
@@ -2704,7 +2588,7 @@ button[title]:hover::before {
 /* ==================== بطاقة الترويج (الرئيسية) ==================== */
 .brand-promo-card {
     max-width: 900px;
-    margin: 230px auto 0;
+    margin: 177px auto 0; /* تقلّص بمقدار 53px بعد حذف شريط "حفظ/مسح البيانات" الثابت */
     padding: 22px 20px 18px;
     background: linear-gradient(150deg, var(--primary-dark) 0%, #033024 100%);
     border-radius: 20px;
@@ -2712,8 +2596,8 @@ button[title]:hover::before {
     color: #fff;
     box-shadow: var(--shadow);
 }
-@media (max-width: 768px) { .brand-promo-card { margin-top: 220px; } }
-@media (max-width: 480px) { .brand-promo-card { margin-top: 210px; } }
+@media (max-width: 768px) { .brand-promo-card { margin-top: 167px; } }
+@media (max-width: 480px) { .brand-promo-card { margin-top: 157px; } }
 .brand-promo-icon {
     width: 52px; height: 52px;
     margin: 0 auto 8px;
@@ -2764,13 +2648,17 @@ button[title]:hover::before {
 .bottom-nav-item i { font-size: 17px; }
 .bottom-nav-item.active { color: var(--primary); }
 .bottom-nav-fab {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
-    color: #fff !important;
+    /* بلا !important عمداً: updateAiButtonTheme() يلوّن هذا الزر حسب ثيم التطبيق المختار */
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: #fff;
     width: 50px; height: 50px;
     border-radius: 50%;
     margin-top: -26px;
     box-shadow: 0 6px 16px rgba(4,74,53,0.4);
     flex: 0 0 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .bottom-nav-fab i { font-size: 20px; }
 
@@ -2968,12 +2856,6 @@ button[title]:hover::before {
 
 <body class="theme-default">
 
-<!-- زر التعبئة الذكية العائم -->
-<button id="aiFillFloatingBtn" onclick="fillWithAI()" title="تعبئة الحقول تلقائياً باستخدام الذكاء الاصطناعي">
-    <i class="fas fa-wand-magic-sparkles floating-ai-icon"></i>
-    <span class="floating-ai-text">تعبئة ذكية</span>
-</button>
-
 <!-- شاشة تسجيل الدخول / إنشاء حساب (Supabase Auth) -->
 <div id="activationScreen">
     <div class="activation-box">
@@ -3083,19 +2965,7 @@ button[title]:hover::before {
     </div>
 </div>
 
-<!-- ========== الأزرار الصغيرة (إدارة مسودة التقرير الحالي) ========== -->
-<div class="top-small-buttons">
-    <div class="small-buttons-grid">
-        <button class="small-btn" id="saveTeacherBtn" onclick="saveTeacherData()" title="حفظ بيانات هذا التقرير">
-            <i class="fas fa-save small-btn-icon"></i>
-            <span class="small-btn-text">حفظ البيانات</span>
-        </button>
-        <button class="small-btn" id="clearBtn" onclick="clearData()" title="مسح بيانات هذا التقرير والنصوص المولدة فقط">
-            <i class="fas fa-trash-alt small-btn-icon"></i>
-            <span class="small-btn-text">مسح البيانات</span>
-        </button>
-    </div>
-</div>
+<!-- ملاحظة: زرا "حفظ البيانات" و"مسح البيانات" انتقلا إلى نافذة الإعدادات (settingsModal) -->
 
 <!-- ========== المجموعة الثانية: الأزرار الكبيرة ========== -->
 <div class="main-buttons-bar">
@@ -3146,65 +3016,6 @@ button[title]:hover::before {
     </button>
     <div class="main-accordion-body" id="mainSection1">
 
-      <!-- ========== مكان وزمن التنفيذ (منقولة من قسم بيانات التقرير الأساسية سابقاً) ========== -->
-      <div class="form-row">
-        <div class="form-group">
-          <label for="place"><i class="fas fa-map-marker-alt"></i> مكان التنفيذ</label>
-          <select id="place" onchange="togglePlaceFields()" oninput="updateReport()">
-            <option value="داخل الصف">داخل الصف</option>
-            <option value="خارج الصف">خارج الصف</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="term"><i class="fas fa-calendar-alt"></i> الفصل الدراسي</label>
-          <select id="term" oninput="updateReport()">
-            <option value="">اختر الفصل</option>
-            <option value="الأول">الأول</option>
-            <option value="الثاني">الثاني</option>
-            <option value="الثالث">الثالث</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- تفاصيل المكان (يتم إخفاؤها داخل الصف) -->
-      <div class="form-group" id="detailedPlaceGroup">
-        <label><i class="fas fa-location-dot"></i> حدد المكان بالضبط</label>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-          <select id="detailedPlaceSelect" style="flex: 2;" onchange="toggleDetailedPlaceInput()">
-            <option value="">اختر موقعاً محدداً</option>
-            <option value="الفناء المدرسي">الفناء المدرسي</option>
-            <option value="غرفة المدير">غرفة المدير</option>
-            <option value="غرفة الاجتماعات">غرفة الاجتماعات</option>
-            <option value="رحلة خارج المدرسة">رحلة خارج المدرسة</option>
-            <option value="أخرى">أخرى (اكتب)</option>
-          </select>
-          <input type="text" id="detailedPlaceInput" placeholder="اكتب موقعاً آخر" style="flex: 3; display: none;" oninput="updateReport()">
-        </div>
-      </div>
-
-      <!-- الحقول الخاصة بالمعلم (تظهر فقط إذا كان الدور teacher والمكان داخل الصف) -->
-      <div id="teacherFields" style="display: none;">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="grade"><i class="fas fa-users-class"></i> الصف</label>
-            <input id="grade" placeholder="مثال: ٥/٣" oninput="updateReport()">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="subject"><i class="fas fa-book"></i> المادة / البرنامج</label>
-            <input id="subject" placeholder="مثال: لغتي" oninput="updateReport()">
-          </div>
-          <div class="form-group">
-            <label for="lesson"><i class="fas fa-book-open"></i> الدرس / النشاط</label>
-            <input id="lesson" placeholder="مثال: درس الضرب" oninput="updateReport()">
-          </div>
-        </div>
-      </div>
-
-      <!-- الحقول الصغيرة الخاصة بالدور (تظهر في الأعلى) -->
-      <div id="smallRoleFields" class="small-fields" style="display: none;"></div>
-
       <!-- ========== القوائم المتتالية (اختيارية) ========== -->
       <div class="levels-container">
         <div class="level-indicator">
@@ -3253,6 +3064,65 @@ button[title]:hover::before {
             <label><i class="fas fa-heading"></i> عنوان التقرير <span style="color:#ff6b6b;">*</span></label>
             <input type="text" id="manualReportTitle" placeholder="أدخل عنوان التقرير (مثال: تقرير زيارة صفية)" oninput="updateReport()" required>
         </div>
+
+        <!-- ========== مكان وزمن التنفيذ (منقولة من قسم بيانات التقرير الأساسية سابقاً) ========== -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="place"><i class="fas fa-map-marker-alt"></i> مكان التنفيذ</label>
+            <select id="place" onchange="togglePlaceFields()" oninput="updateReport()">
+              <option value="داخل الصف">داخل الصف</option>
+              <option value="خارج الصف">خارج الصف</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="term"><i class="fas fa-calendar-alt"></i> الفصل الدراسي</label>
+            <select id="term" oninput="updateReport()">
+              <option value="">اختر الفصل</option>
+              <option value="الأول">الأول</option>
+              <option value="الثاني">الثاني</option>
+              <option value="الثالث">الثالث</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- تفاصيل المكان (يتم إخفاؤها داخل الصف) -->
+        <div class="form-group" id="detailedPlaceGroup">
+          <label><i class="fas fa-location-dot"></i> حدد المكان بالضبط</label>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <select id="detailedPlaceSelect" style="flex: 2;" onchange="toggleDetailedPlaceInput()">
+              <option value="">اختر موقعاً محدداً</option>
+              <option value="الفناء المدرسي">الفناء المدرسي</option>
+              <option value="غرفة المدير">غرفة المدير</option>
+              <option value="غرفة الاجتماعات">غرفة الاجتماعات</option>
+              <option value="رحلة خارج المدرسة">رحلة خارج المدرسة</option>
+              <option value="أخرى">أخرى (اكتب)</option>
+            </select>
+            <input type="text" id="detailedPlaceInput" placeholder="اكتب موقعاً آخر" style="flex: 3; display: none;" oninput="updateReport()">
+          </div>
+        </div>
+
+        <!-- الحقول الخاصة بالمعلم (تظهر فقط إذا كان الدور teacher والمكان داخل الصف) -->
+        <div id="teacherFields" style="display: none;">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="grade"><i class="fas fa-users-class"></i> الصف</label>
+              <input id="grade" placeholder="مثال: ٥/٣" oninput="updateReport()">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="subject"><i class="fas fa-book"></i> المادة / البرنامج</label>
+              <input id="subject" placeholder="مثال: لغتي" oninput="updateReport()">
+            </div>
+            <div class="form-group">
+              <label for="lesson"><i class="fas fa-book-open"></i> الدرس / النشاط</label>
+              <input id="lesson" placeholder="مثال: درس الضرب" oninput="updateReport()">
+            </div>
+          </div>
+        </div>
+
+        <!-- الحقول الصغيرة الخاصة بالدور (تظهر في الأعلى) -->
+        <div id="smallRoleFields" class="small-fields" style="display: none;"></div>
       </div>
 
       <!-- المستهدفون والعدد (حقول مشتركة) -->
@@ -3547,8 +3417,9 @@ button[title]:hover::before {
     <button type="button" class="bottom-nav-item" id="navSavedReports1" onclick="openSavedReports()">
         <i class="fas fa-clock-rotate-left"></i><span>التقارير السابقة</span>
     </button>
-    <button type="button" class="bottom-nav-item bottom-nav-fab" id="navCreate" onclick="showPage('home')">
-        <i class="fas fa-plus"></i>
+    <button type="button" class="bottom-nav-item bottom-nav-fab" id="aiFillFloatingBtn" onclick="fillWithAI()" title="تعبئة الحقول تلقائياً باستخدام الذكاء الاصطناعي">
+        <i class="fas fa-wand-magic-sparkles floating-ai-icon"></i>
+        <span class="floating-ai-text">تعبئة ذكية</span>
     </button>
     <button type="button" class="bottom-nav-item" id="navSavedReports2" onclick="openSavedReports()">
         <i class="fas fa-folder-open"></i><span>التقارير المحفوظة</span>
@@ -4103,6 +3974,18 @@ button[title]:hover::before {
     <label style="font-weight:700;color:#044a35;display:block;"><i class="fas fa-calendar-alt"></i> تاريخ التقرير</label>
     <input type="date" id="customReportDate">
     <button onclick="saveReportDate()" class="btn-secondary">حفظ تاريخ التقرير</button>
+    <hr>
+    <h4 style="color:#044a35; margin-bottom:10px;"><i class="fas fa-file-lines"></i> بيانات التقرير الحالي</h4>
+    <div class="small-buttons-grid" style="margin-bottom:15px;">
+        <button class="small-btn" id="saveTeacherBtn" onclick="saveTeacherData()" title="حفظ بيانات هذا التقرير">
+            <i class="fas fa-save small-btn-icon"></i>
+            <span class="small-btn-text">حفظ البيانات</span>
+        </button>
+        <button class="small-btn" id="clearBtn" onclick="clearData()" title="مسح بيانات هذا التقرير والنصوص المولدة فقط">
+            <i class="fas fa-trash-alt small-btn-icon"></i>
+            <span class="small-btn-text">مسح البيانات</span>
+        </button>
+    </div>
     <hr>
     <h4 style="color:#044a35; margin-bottom:10px;"><i class="fas fa-palette"></i> تغيير الثيمات</h4>
     <div style="background:#f8fdfa; padding:15px; border-radius:10px; border:1px solid #d4ebe2; margin-bottom:15px;">
@@ -5654,6 +5537,10 @@ function handleReportSearch() {
 
 // ==================== التعبئة الذكية ====================
 async function fillWithAI() {
+    // زر التعبئة الذكية أصبح ضمن شريط التنقل السفلي ومتاح من أي صفحة، فنعيد المستخدم للرئيسية أولاً ليرى الحقول أثناء تعبئتها
+    if (document.getElementById('accountPage') && getComputedStyle(document.getElementById('accountPage')).display !== 'none') {
+        showPage('home');
+    }
     const { data: sessionData } = await supabaseClient.auth.getSession();
     if (!sessionData?.session) { alert('الرجاء تسجيل الدخول أولاً'); showAuthScreen(); return; }
     if (!navigator.onLine) { alert('لا يوجد اتصال بالإنترنت.'); return; }
@@ -5913,7 +5800,6 @@ function getActiveReportTemplate() {
 
 async function downloadPDF() {
     await loadDates();
-    document.querySelector('.top-small-buttons').style.visibility = 'hidden';
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'hidden';
     document.querySelector('.app-header').style.visibility = 'hidden';
@@ -5941,7 +5827,6 @@ async function downloadPDF() {
         html2canvas: { scale: 3, useCORS: true, scrollY: 0, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     }).from(element).save().then(() => {
-        document.querySelector('.top-small-buttons').style.visibility = 'visible';
         document.querySelector('.main-buttons-bar').style.visibility = 'visible';
         document.querySelector('.top-marquee').style.visibility = 'visible';
         document.querySelector('.app-header').style.visibility = 'visible';
@@ -5956,7 +5841,6 @@ async function downloadPDF() {
 
 async function sharePDFWhatsApp() {
     await loadDates();
-    document.querySelector('.top-small-buttons').style.visibility = 'hidden';
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'visible';
     document.querySelector('.app-header').style.visibility = 'hidden';
@@ -5985,7 +5869,6 @@ async function sharePDFWhatsApp() {
         html2canvas: { scale: 3, scrollY: 0, useCORS: true, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     }).from(element).toPdf().output('blob').then((pdfBlob) => {
-        document.querySelector('.top-small-buttons').style.visibility = 'visible';
         document.querySelector('.main-buttons-bar').style.visibility = 'visible';
         document.querySelector('.top-marquee').style.visibility = 'visible';
         document.querySelector('.app-header').style.visibility = 'visible';
@@ -6035,16 +5918,13 @@ function closeSettings() {
 function showPage(name) {
     const home = document.getElementById('homePage');
     const account = document.getElementById('accountPage');
-    const aiBtn = document.getElementById('aiFillFloatingBtn');
     if (name === 'account') {
         if (home) home.style.display = 'none';
         if (account) account.style.display = 'block';
-        if (aiBtn) aiBtn.style.display = 'none'; // خاص بتعبئة نموذج التقرير في الرئيسية فقط
         renderAccountSummary();
     } else {
         if (account) account.style.display = 'none';
         if (home) home.style.display = 'block';
-        if (aiBtn) aiBtn.style.display = 'flex';
     }
     document.getElementById('navHome')?.classList.toggle('active', name !== 'account');
     document.getElementById('navAccount')?.classList.toggle('active', name === 'account');
