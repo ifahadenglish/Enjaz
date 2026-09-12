@@ -268,20 +268,24 @@ html, body {
     transition: none;
 }
 
-/* زر التعبئة الذكية - أصبح مدمجاً داخل شريط التنقل السفلي (bottom-nav-fab)، ثابت وليس عائماً */
+/* زر التعبئة الذكية - أصبح مدمجاً داخل شريط التنقل السفلي (bottom-nav-fab)، ثابت وليس عائماً،
+   مع تسمية "توليد التقرير" أسفل الأيقونة ليعرف المستخدم أن هذا الزر لتوليد التقرير */
+#aiFillFloatingBtn .fab-icon-circle {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    box-shadow: 0 6px 16px rgba(4,74,53,0.4);
+}
 #aiFillFloatingBtn .floating-ai-icon {
-    font-size: 20px;
+    font-size: 19px;
     color: #FFFFFF;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
-
-/* نص الزر مخفي بصرياً (الشكل دائرة أيقونة فقط كما في التصميم) لكنه موجود للـ title/قارئ الشاشة ومنطق التحميل */
 #aiFillFloatingBtn .floating-ai-text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--text-dark);
     white-space: nowrap;
 }
 
@@ -1798,7 +1802,7 @@ button[title]:hover::before {
     background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
 }
 
-.theme-light-blue #aiFillFloatingBtn {
+.theme-light-blue #aiFillFloatingBtn .fab-icon-circle {
     background: linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc05 50%, #ea4335 100%) !important;
 }
 
@@ -1829,7 +1833,7 @@ button[title]:hover::before {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
-.theme-dark #aiFillFloatingBtn {
+.theme-dark #aiFillFloatingBtn .fab-icon-circle {
     background: linear-gradient(135deg, #6d28d9 0%, #7c3aed 25%, #8b5cf6 50%, #a78bfa 100%) !important;
 }
 
@@ -1851,7 +1855,7 @@ button[title]:hover::before {
     background: linear-gradient(135deg, #1e8449 0%, #27ae60 100%);
 }
 
-.theme-green #aiFillFloatingBtn {
+.theme-green #aiFillFloatingBtn .fab-icon-circle {
     background: linear-gradient(135deg, #27ae60 0%, #2ecc71 25%, #3498db 50%, #9b59b6 100%) !important;
 }
 
@@ -2630,19 +2634,21 @@ button[title]:hover::before {
 .bottom-nav-item i { font-size: 17px; }
 .bottom-nav-item.active { color: var(--primary); }
 .bottom-nav-fab {
-    /* بلا !important عمداً: updateAiButtonTheme() يلوّن هذا الزر حسب ثيم التطبيق المختار */
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: #fff;
-    width: 50px; height: 50px;
-    border-radius: 50%;
-    margin-top: -26px;
-    box-shadow: 0 6px 16px rgba(4,74,53,0.4);
-    flex: 0 0 50px;
+    /* الدائرة الملوّنة أصبحت في .fab-icon-circle الداخلي (updateAiButtonTheme يلوّنها حسب الثيم)؛
+       هذا الزر نفسه بلا خلفية الآن، فقط يرفع الدائرة أعلى الشريط ويضع التسمية أسفلها */
+    background: none;
+    color: var(--text-dark);
+    width: auto; height: auto;
+    border-radius: 0;
+    margin-top: -20px;
+    box-shadow: none;
+    flex: 0 0 60px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    gap: 4px;
 }
-.bottom-nav-fab i { font-size: 20px; }
 
 /* ==================== القائمة الجانبية ==================== */
 .drawer-overlay {
@@ -2913,7 +2919,33 @@ button[title]:hover::before {
     }
 
     /* ---- إخفاء عناصر واجهة الهاتف غير اللازمة على الحاسوب ---- */
-    .bottom-nav, #drawerOverlay, #sideDrawer, #hamburgerBtn, .top-marquee { display: none !important; }
+    #drawerOverlay, #sideDrawer, #hamburgerBtn, .top-marquee { display: none !important; }
+
+    /* ---- شريط التنقل السفلي على الحاسوب: الشريط نفسه يختفي، ويبقى فقط زر
+       "توليد التقرير" (تعبئة ذكية) ظاهراً كزر ثابت عائم أسفل يمين عمود التقرير،
+       لأنه لا مكان له غير ذلك ضمن تصميم الحاسوب الجديد (الشريط الجانبي لا يحتوي عليه) ---- */
+    .bottom-nav {
+        position: fixed;
+        top: auto;
+        bottom: 26px;
+        right: 254px; /* يمين عمود المحتوى، بعيداً عن الشريط الجانبي (230px + هامش) */
+        left: auto;
+        width: auto;
+        height: auto;
+        background: none;
+        box-shadow: none;
+        padding: 0;
+        z-index: 600;
+        justify-content: flex-end;
+    }
+    .bottom-nav-item:not(.bottom-nav-fab) { display: none; }
+    .bottom-nav-fab {
+        margin-top: 0;
+        background: #fff;
+        padding: 10px 16px 8px;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(4,74,53,0.2);
+    }
 
     /* ---- حجز مساحة على يمين الصفحة للشريط الجانبي ---- */
     body { margin-right: 230px; }
@@ -3539,9 +3571,9 @@ button[title]:hover::before {
     <button type="button" class="bottom-nav-item" id="navSavedReports1" onclick="openSavedReports()">
         <i class="fas fa-clock-rotate-left"></i><span>التقارير السابقة</span>
     </button>
-    <button type="button" class="bottom-nav-item bottom-nav-fab" id="aiFillFloatingBtn" onclick="fillWithAI()" title="تعبئة الحقول تلقائياً باستخدام الذكاء الاصطناعي">
-        <i class="fas fa-wand-magic-sparkles floating-ai-icon"></i>
-        <span class="floating-ai-text">تعبئة ذكية</span>
+    <button type="button" class="bottom-nav-item bottom-nav-fab" id="aiFillFloatingBtn" onclick="fillWithAI()" title="تعبئة الحقول تلقائياً وتوليد التقرير بالذكاء الاصطناعي">
+        <span class="fab-icon-circle"><i class="fas fa-wand-magic-sparkles floating-ai-icon"></i></span>
+        <span class="floating-ai-text">توليد التقرير</span>
     </button>
     <button type="button" class="bottom-nav-item" id="navSavedReports2" onclick="openSavedReports()">
         <i class="fas fa-folder-open"></i><span>التقارير المحفوظة</span>
@@ -4468,22 +4500,33 @@ async function loadAccountProfile() {
 
 // حفظ حقول الهوية الأساسية إلى حساب المستخدم في Supabase (بالإضافة إلى الحفظ المحلي
 // الموجود في saveTeacherData) - بحيث تتوفر تلقائياً عند الدخول من أي جهاز آخر.
+// يعيد true عند نجاح الرفع لخادم Supabase، وfalse عند الفشل - حتى يستطيع المستدعي
+// (saveAccountEdits) إعلام المستخدم بوضوح بدل فشل صامت لا يعرف عنه شيئاً.
 async function saveAccountProfile() {
     try {
         const { data: sessionData } = await supabaseClient.auth.getSession();
         const userId = sessionData?.session?.user?.id;
-        if (!userId) return;
+        if (!userId) return false;
 
-        await supabaseClient.from('profiles').update({
+        // upsert بدل update: لو تعذّر إنشاء صف profiles لهذا المستخدم عند التسجيل لأي سبب،
+        // upsert يُنشئه الآن بدل أن يفشل التحديث بصمت على صف غير موجود.
+        const { error } = await supabaseClient.from('profiles').upsert({
+            id: userId,
             reporter_name: document.getElementById('reporterName').value || null,
             reporter_type: document.getElementById('reporterType').value || null,
             education: document.getElementById('education').value || null,
             school: document.getElementById('school').value || null,
             principal: document.getElementById('principal').value || null,
-        }).eq('id', userId);
+        }, { onConflict: 'id' });
+
+        if (error) {
+            console.error('تعذر حفظ بيانات الحساب في الخادم:', error);
+            return false;
+        }
+        return true;
     } catch (e) {
-        // حفظ بيانات الحساب هو تحسين إضافي - لا يجب أن يمنع نجاح الحفظ المحلي
         console.error('تعذر حفظ بيانات الحساب:', e);
+        return false;
     }
 }
 
@@ -4562,30 +4605,38 @@ function applyAppTheme(themeName) {
 
 function updateAiButtonTheme(themeName) {
     const aiButton = document.getElementById('aiFillFloatingBtn');
+    const iconCircle = aiButton.querySelector('.fab-icon-circle');
     const aiIcon = aiButton.querySelector('.floating-ai-icon');
     const aiText = aiButton.querySelector('.floating-ai-text');
+    let bg, shadow;
     switch(themeName) {
         case 'light-blue':
-            aiButton.style.background = 'linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc05 50%, #ea4335 100%)';
-            aiButton.style.boxShadow = '0 12px 35px rgba(66, 133, 244, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0 25px rgba(66, 133, 244, 0.5)';
+            bg = 'linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc05 50%, #ea4335 100%)';
+            shadow = '0 6px 16px rgba(66, 133, 244, 0.5)';
             break;
         case 'dark':
-            aiButton.style.background = 'linear-gradient(135deg, #6d28d9 0%, #7c3aed 25%, #8b5cf6 50%, #a78bfa 100%)';
-            aiButton.style.boxShadow = '0 12px 35px rgba(109, 40, 217, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0 25px rgba(109, 40, 217, 0.5)';
+            bg = 'linear-gradient(135deg, #6d28d9 0%, #7c3aed 25%, #8b5cf6 50%, #a78bfa 100%)';
+            shadow = '0 6px 16px rgba(109, 40, 217, 0.5)';
             break;
         case 'green':
-            aiButton.style.background = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 25%, #3498db 50%, #9b59b6 100%)';
-            aiButton.style.boxShadow = '0 12px 35px rgba(46, 204, 113, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0 25px rgba(46, 204, 113, 0.5)';
+            bg = 'linear-gradient(135deg, #27ae60 0%, #2ecc71 25%, #3498db 50%, #9b59b6 100%)';
+            shadow = '0 6px 16px rgba(46, 204, 113, 0.5)';
             break;
         default:
-            aiButton.style.background = 'linear-gradient(135deg, #9D50BB 0%, #6E48AA 25%, #533D8B 50%, #3A2569 100%)';
-            aiButton.style.boxShadow = '0 12px 35px rgba(157, 80, 187, 0.6), 0 0 0 3px rgba(255, 255, 255, 0.3), 0 0 25px rgba(157, 80, 187, 0.5)';
+            bg = 'linear-gradient(135deg, #9D50BB 0%, #6E48AA 25%, #533D8B 50%, #3A2569 100%)';
+            shadow = '0 6px 16px rgba(157, 80, 187, 0.5)';
+    }
+    if (iconCircle) {
+        iconCircle.style.background = bg;
+        iconCircle.style.boxShadow = shadow;
     }
     aiIcon.style.color = '#FFFFFF';
-    aiText.style.background = 'linear-gradient(45deg, #FFFFFF, #F0F9F6, #FFFFFF)';
-    aiText.style.webkitBackgroundClip = 'text';
-    aiText.style.webkitTextFillColor = 'transparent';
-    aiText.style.backgroundClip = 'text';
+    // التسمية "توليد التقرير" أصبحت أسفل الدائرة على خلفية الشريط العادية - لون نصي عادي يتماشى مع بقية عناصر التنقل
+    aiText.style.background = 'none';
+    aiText.style.webkitBackgroundClip = 'unset';
+    aiText.style.webkitTextFillColor = 'unset';
+    aiText.style.backgroundClip = 'unset';
+    aiText.style.color = 'var(--text-dark)';
 }
 
 function applyPdfTheme(themeName) {
@@ -6144,14 +6195,18 @@ function toggleAccountEdit() {
     document.getElementById('accountEditBtn').style.display = isOpen ? 'inline-flex' : 'none';
 }
 
-function saveAccountEdits() {
-    saveAccountProfile();
+async function saveAccountEdits() {
     updateReport();
     renderAccountSummary();
     document.getElementById('accountEditMode').style.display = 'none';
     document.getElementById('accountViewMode').style.display = 'block';
     document.getElementById('accountEditBtn').style.display = 'inline-flex';
-    showNotification('تم حفظ بيانات الحساب بنجاح!');
+    const savedToServer = await saveAccountProfile();
+    if (savedToServer) {
+        showNotification('تم حفظ بيانات الحساب بنجاح! ستظهر تلقائياً عند دخولك من أي جهاز آخر.');
+    } else {
+        showNotification('تم الحفظ على هذا الجهاز، لكن تعذّر رفع البيانات للخادم - تحقق من اتصالك بالإنترنت وحاول مجدداً.');
+    }
 }
 
 // يحدّث كلاً من: رأس التطبيق العلوي، القائمة الجانبية، وصفحة "حسابي" - من نفس
