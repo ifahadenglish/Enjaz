@@ -2170,7 +2170,12 @@ button[title]:hover::before {
 
 .image-box {
     border: 1px dashed var(--border);
-    height: 160px;
+    height: 140px;
+    max-height: 140px;
+    min-height: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    align-self: start;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2219,7 +2224,7 @@ button[title]:hover::before {
 }
 
 .signature-name {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 900;
     color: #000;
 }
@@ -6064,22 +6069,13 @@ function getActiveReportTemplate() {
     return template;
 }
 
-// px لكل مليمتر عند الدقة القياسية التي تعتمدها المتصفحات لوحدة mm في CSS (96dpi) - تُستخدم
-// لتحويل الارتفاع الفعلي المُقاس للتقرير (بالبكسل) إلى مليمترات لمقارنته بارتفاع صفحة A4.
-const PX_PER_MM = 96 / 25.4;
-
-// يكتشف إن كان التقرير سيتجاوز ارتفاع صفحة A4 الواحدة (297مم) عند التصدير، وهو ما يتسبب في
-// انبثاق صفحة ثانية شبه فارغة لا تحوي إلا جزءاً ضئيلاً متبقياً من المحتوى (مشكلة معروفة في
-// html2pdf عند تقسيمه التلقائي للمحتوى الطويل). نترك هامش أمان بسيطاً (296 بدل 297).
-function reportExceedsOnePageA4(element) {
-    return (element.scrollHeight / PX_PER_MM) > 296;
-}
-
-// يلتقط التقرير كصورة واحدة كاملة (بلا تقسيم تلقائي على صفحات) ويضعها بحجم صفحة A4 الكامل
-// تماماً (210×297مم، بلا هوامش) - فرق بصري غير محسوس عملياً لأن التجاوز عادة طفيف جداً (بضعة
-// مليمترات فقط)، بدل تقسيم المحتوى فعلياً على صفحتين أو تصغيره بوضوح مع هوامش بيضاء حوله.
-// تُستخدم هذه الطريقة فقط عند اكتشاف تجاوز فعلي عبر reportExceedsOnePageA4 أعلاه - التقارير
-// التي تدخل ضمن صفحة واحدة بشكل طبيعي تستمر بالمسار الافتراضي (html2pdf) دون أي تغيير.
+// يلتقط التقرير كصورة واحدة كاملة عبر html2canvas مباشرة (بلا تقسيم تلقائي على صفحات كما
+// يفعل html2pdf افتراضياً)، بعد أن تكون كل الصور قد اكتملت تحميلها فعلياً ضمن الصورة الملتقطة
+// (بخلاف قياس ارتفاع العنصر في الصفحة قبل الالتقاط، الذي قد يقع قبل اكتمال عرض الصور فيُخطئ
+// التقدير). نقارن نسبة أبعاد الصورة الملتقطة نفسها بنسبة صفحة A4 (297/210):
+// - إن كانت ضمن صفحة واحدة طبيعياً: توضع بارتفاعها الطبيعي دون أي تمديد أو تصغير.
+// - إن كانت أطول (تجاوز فعلي): تُفرد على كامل الصفحة (210×297مم بالضبط) - فرق غير محسوس
+//   عملياً لأن التجاوز عادة طفيف جداً، بدل تقسيمها فعلياً على صفحتين أو ترك هوامش بيضاء حولها.
 async function captureReportAsSinglePageA4Pdf(element) {
     try {
         const canvas = await html2canvas(element, {
@@ -6090,7 +6086,10 @@ async function captureReportAsSinglePageA4Pdf(element) {
         if (!JsPDFCtor) return null; // احتياط: نعود للمسار الافتراضي إن تعذّر الوصول لمكتبة jsPDF لأي سبب
         const imgData = canvas.toDataURL('image/jpeg', 0.95);
         const pdf = new JsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        const pageWidthMm = 210, pageHeightMm = 297;
+        const naturalHeightMm = (canvas.height / canvas.width) * pageWidthMm;
+        const renderHeightMm = Math.min(naturalHeightMm, pageHeightMm);
+        pdf.addImage(imgData, 'JPEG', 0, 0, pageWidthMm, renderHeightMm);
         return pdf;
     } catch (e) {
         console.error('تعذر إنشاء PDF بصفحة واحدة، سيتم استخدام المسار الافتراضي:', e);
@@ -6134,13 +6133,11 @@ async function downloadPDF() {
         showNotification("تم تنزيل التقرير بصيغة PDF!");
     };
 
-    if (reportExceedsOnePageA4(element)) {
-        const pdf = await captureReportAsSinglePageA4Pdf(element);
-        if (pdf) {
-            pdf.save(cleanFileName + ".pdf");
-            restoreUiAfterExport();
-            return;
-        }
+    const singlePagePdf = await captureReportAsSinglePageA4Pdf(element);
+    if (singlePagePdf) {
+        singlePagePdf.save(cleanFileName + ".pdf");
+        restoreUiAfterExport();
+        return;
     }
 
     html2pdf().set({
@@ -6207,12 +6204,10 @@ async function sharePDFWhatsApp() {
         }
     };
 
-    if (reportExceedsOnePageA4(element)) {
-        const pdf = await captureReportAsSinglePageA4Pdf(element);
-        if (pdf) {
-            handlePdfBlob(pdf.output('blob'));
-            return;
-        }
+    const singlePagePdf = await captureReportAsSinglePageA4Pdf(element);
+    if (singlePagePdf) {
+        handlePdfBlob(singlePagePdf.output('blob'));
+        return;
     }
 
     await html2pdf().set({
