@@ -4528,21 +4528,45 @@ async function saveAccountProfile() {
         const userId = sessionData?.session?.user?.id;
         if (!userId) return false;
 
-        // upsert بدل update: لو تعذّر إنشاء صف profiles لهذا المستخدم عند التسجيل لأي سبب،
-        // upsert يُنشئه الآن بدل أن يفشل التحديث بصمت على صف غير موجود.
-        const { error } = await supabaseClient.from('profiles').upsert({
-            id: userId,
+        const payload = {
             reporter_name: document.getElementById('reporterName').value || null,
             reporter_type: document.getElementById('reporterType').value || null,
             education: document.getElementById('education').value || null,
             school: document.getElementById('school').value || null,
             principal: document.getElementById('principal').value || null,
-        }, { onConflict: 'id' });
+        };
+
+        // update فقط (وليس upsert): صف profiles لهذا المستخدم موجود مسبقاً دائماً (يُنشأ
+        // تلقائياً عند التسجيل). upsert كان يفشل فعلياً بخطأ 400 من الخادم لأنه ينفّذ
+        // إدراجاً مبدئياً يتضمن كل الأعمدة، بما فيها عمود username الإلزامي (NOT NULL)
+        // غير المُرسَل هنا - فيُرفض قبل أن يصل لمرحلة "تعديل بدل الإدراج".
+        const { data: updatedRows, error } = await supabaseClient
+            .from('profiles')
+            .update(payload)
+            .eq('id', userId)
+            .select('id');
 
         if (error) {
             console.error('تعذر حفظ بيانات الحساب في الخادم:', error);
             return false;
         }
+
+        // احتياط نادر: لو لم يكن هناك صف profiles لهذا المستخدم أصلاً (لأي سبب استثنائي
+        // منعه من الإنشاء التلقائي عند التسجيل)، ننشئه الآن مع تعبئة username الإلزامي.
+        if (!updatedRows || updatedRows.length === 0) {
+            const email = sessionData?.session?.user?.email || '';
+            const fallbackUsername = (email.split('@')[0] || ('user_' + userId.slice(0, 8)));
+            const { error: insertError } = await supabaseClient.from('profiles').insert({
+                id: userId,
+                username: fallbackUsername,
+                ...payload,
+            });
+            if (insertError) {
+                console.error('تعذر إنشاء صف الحساب في الخادم:', insertError);
+                return false;
+            }
+        }
+
         return true;
     } catch (e) {
         console.error('تعذر حفظ بيانات الحساب:', e);
