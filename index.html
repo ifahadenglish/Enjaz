@@ -55,10 +55,10 @@ html, body {
     width: 100%;
 }
 
-/* شريط الأخبار العلوي */
+/* شريط الأخبار العلوي (تحته رأس التطبيق الثابت app-header بارتفاع 60px) */
 .top-marquee {
     position: fixed;
-    top: 0;
+    top: 60px;
     left: 0;
     right: 0;
     width: 100%;
@@ -112,7 +112,7 @@ html, body {
 /* المجموعة الأولى: الأزرار الصغيرة */
 .top-small-buttons {
     position: fixed;
-    top: 45px;
+    top: 105px;
     left: 0;
     right: 0;
     width: 100%;
@@ -209,7 +209,7 @@ html, body {
 /* المجموعة الثانية: الأزرار الكبيرة */
 .main-buttons-bar {
     position: fixed;
-    top: 98px;
+    top: 158px;
     left: 0;
     right: 0;
     width: 100%;
@@ -288,7 +288,7 @@ html, body {
 /* زر التعبئة الذكية العائم */
 #aiFillFloatingBtn {
     position: fixed;
-    bottom: 30px;
+    bottom: 100px; /* فوق شريط التنقل السفلي bottom-nav */
     left: 30px;
     width: 100px;
     height: 100px;
@@ -713,7 +713,7 @@ html, body {
     box-shadow: 0 10px 30px rgba(4, 74, 53, 0.12);
     position: relative;
     overflow: hidden;
-    margin-top: 170px; /* لتعويض الأزرار الثابتة */
+    margin-top: 20px; /* بطاقة الترويج (brand-promo-card) هي التي تعوّض الأزرار الثابتة الآن */
 }
 
 .input-section::before {
@@ -2539,7 +2539,7 @@ button[title]:hover::before {
     
     .input-section {
         padding: 15px;
-        margin-top: 160px;
+        margin-top: 15px;
     }
     
     .input-section h2 {
@@ -2558,7 +2558,7 @@ button[title]:hover::before {
     #aiFillFloatingBtn {
         width: 85px;
         height: 85px;
-        bottom: 20px;
+        bottom: 90px;
         left: 20px;
     }
     
@@ -2612,7 +2612,7 @@ button[title]:hover::before {
     #aiFillFloatingBtn {
         width: 75px;
         height: 75px;
-        bottom: 15px;
+        bottom: 85px;
         left: 15px;
     }
     
@@ -2626,7 +2626,7 @@ button[title]:hover::before {
     
     .input-section {
         padding: 12px;
-        margin-top: 150px;
+        margin-top: 12px;
     }
     
     input, select, textarea {
@@ -2651,6 +2651,318 @@ button[title]:hover::before {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ==================== الرأس العلوي (app-header) ==================== */
+.app-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    z-index: 400;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    box-shadow: 0 2px 10px rgba(4, 74, 53, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.app-header-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    min-width: 0;
+}
+.app-header-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.4);
+}
+.app-header-text { display: flex; flex-direction: column; min-width: 0; }
+.app-header-greeting { color: #fff; font-weight: 800; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45vw; }
+.app-header-role { color: rgba(255,255,255,0.8); font-size: 11px; }
+.app-header-actions { display: flex; align-items: center; gap: 6px; }
+.app-header-icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.app-header-icon-btn:active { background: rgba(255,255,255,0.3); }
+
+/* ==================== بطاقة الترويج (الرئيسية) ==================== */
+.brand-promo-card {
+    max-width: 900px;
+    margin: 230px auto 0;
+    padding: 22px 20px 18px;
+    background: linear-gradient(150deg, var(--primary-dark) 0%, #033024 100%);
+    border-radius: 20px;
+    text-align: center;
+    color: #fff;
+    box-shadow: var(--shadow);
+}
+@media (max-width: 768px) { .brand-promo-card { margin-top: 220px; } }
+@media (max-width: 480px) { .brand-promo-card { margin-top: 210px; } }
+.brand-promo-icon {
+    width: 52px; height: 52px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    color: var(--secondary);
+}
+.brand-promo-card h3 { font-size: 22px; margin-bottom: 2px; }
+.brand-promo-sub { display: block; font-size: 12px; color: rgba(255,255,255,0.75); margin-bottom: 14px; }
+.brand-promo-title { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+.brand-promo-desc { font-size: 12px; color: rgba(255,255,255,0.8); margin-bottom: 14px; }
+.brand-promo-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.brand-promo-pills span {
+    font-size: 11px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: #fff;
+    display: inline-flex; align-items: center; gap: 5px;
+}
+
+/* ==================== شريط التنقل السفلي ==================== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 62px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 -2px 12px rgba(4,74,53,0.12);
+    z-index: 400;
+    padding: 0 4px;
+}
+.bottom-nav-item {
+    background: none; border: none;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    color: var(--text-light);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 1;
+    padding: 6px 2px;
+}
+.bottom-nav-item i { font-size: 17px; }
+.bottom-nav-item.active { color: var(--primary); }
+.bottom-nav-fab {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+    color: #fff !important;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    margin-top: -26px;
+    box-shadow: 0 6px 16px rgba(4,74,53,0.4);
+    flex: 0 0 50px;
+}
+.bottom-nav-fab i { font-size: 20px; }
+
+/* ==================== القائمة الجانبية ==================== */
+.drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 850;
+}
+.side-drawer {
+    position: fixed;
+    top: 0; bottom: 0; right: 0;
+    width: 78%;
+    max-width: 300px;
+    background: #fff;
+    z-index: 900;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 18px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+.side-drawer.open { transform: translateX(0); }
+.drawer-close-btn {
+    align-self: flex-start;
+    background: none; border: none;
+    font-size: 18px; color: var(--text-light);
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+.drawer-profile {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--gray-light);
+    border-radius: 14px;
+    padding: 12px;
+    cursor: pointer;
+    margin-bottom: 18px;
+}
+.drawer-profile-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.drawer-profile-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.drawer-profile-name { font-weight: 800; color: var(--text-dark); font-size: 14px; }
+.drawer-profile-role { font-size: 12px; color: var(--text-light); }
+.drawer-nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.drawer-nav button {
+    display: flex; align-items: center; gap: 12px;
+    background: none; border: none;
+    text-align: right;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+    cursor: pointer;
+    border-radius: 10px;
+    font-family: inherit;
+}
+.drawer-nav button:active { background: var(--gray-light); }
+.drawer-nav button i { width: 20px; color: var(--primary); }
+.drawer-logout-btn {
+    display: flex; align-items: center; gap: 12px;
+    background: none; border: none;
+    border-top: 1px solid var(--border);
+    padding: 14px 8px 8px;
+    font-size: 14px; font-weight: 700;
+    color: var(--danger);
+    cursor: pointer;
+    font-family: inherit;
+}
+.drawer-footer { text-align: center; margin-top: 14px; color: var(--text-light); font-size: 11px; }
+.drawer-footer p { margin-bottom: 2px; font-weight: 700; color: var(--primary-dark); }
+
+/* نافذة عامة بسيطة (معلومات التطبيق) - بنفس أسلوب settingsModal */
+.drawer-modal-base {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 5000;
+    align-items: center;
+    justify-content: center;
+}
+.drawer-modal-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px 20px;
+    max-width: 420px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.drawer-modal-box h3 { color: var(--primary-dark); margin-bottom: 14px; }
+.drawer-modal-box button {
+    margin-top: 18px;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ==================== صفحة حسابي ==================== */
+#accountPage {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 80px 16px 90px;
+    box-sizing: border-box;
+}
+.account-page-title { text-align: center; margin-bottom: 18px; }
+.account-page-title h2 { color: var(--primary-dark); font-size: 20px; margin-bottom: 4px; }
+.account-page-title p { color: var(--text-light); font-size: 13px; }
+.account-summary-card {
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+.account-summary-avatar {
+    width: 64px; height: 64px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800;
+}
+.account-summary-name { font-weight: 800; color: var(--text-dark); font-size: 16px; }
+.account-summary-role { color: var(--text-light); font-size: 13px; margin-top: 2px; }
+.account-card {
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+.account-card-header { margin-bottom: 10px; }
+.account-card-header h3 { color: var(--primary-dark); font-size: 15px; }
+.account-rows { display: flex; flex-direction: column; }
+.account-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-light);
+    font-size: 13px;
+}
+.account-row:last-child { border-bottom: none; }
+.account-row i { color: var(--primary); width: 18px; }
+.account-row-label { color: var(--text-light); flex: 1; }
+.account-row-value { color: var(--text-dark); font-weight: 700; }
+.account-edit-btn, .account-save-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.account-edit-form { margin-top: 14px; }
+.account-link-row {
+    width: 100%;
+    display: flex; align-items: center; gap: 10px;
+    background: none; border: none;
+    border-bottom: 1px solid var(--gray-light);
+    padding: 13px 2px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: right;
+}
+.account-link-row:last-child { border-bottom: none; }
+.account-link-row i:first-child { color: var(--primary); width: 18px; }
+.account-link-arrow { margin-right: auto; color: var(--text-light) !important; font-size: 11px; }
 </style>
 </head>
 
@@ -2726,38 +3038,61 @@ button[title]:hover::before {
     <div class="auth-footer-tagline">معًا نحو تعليم أكثر جودة ..<span class="auth-footer-underline"></span></div>
 </div>
 
+<!-- ========== الرأس العلوي للتطبيق (يظهر في كل الصفحات) ========== -->
+<header class="app-header">
+    <div class="app-header-profile" onclick="showPage('account')">
+        <div class="app-header-avatar" id="headerAvatar">؟</div>
+        <div class="app-header-text">
+            <span class="app-header-greeting" id="headerGreeting">أهلاً بك</span>
+            <span class="app-header-role" id="headerRole">معلم</span>
+        </div>
+    </div>
+    <div class="app-header-actions">
+        <button type="button" class="app-header-icon-btn" id="notifBtn" title="التنبيهات" onclick="showNotification('لا توجد تنبيهات جديدة حالياً')">
+            <i class="fas fa-bell"></i>
+        </button>
+        <button type="button" class="app-header-icon-btn" id="hamburgerBtn" title="القائمة" onclick="openDrawer()">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<!-- ================= صفحة الرئيسية (إنشاء/تحرير التقرير) ================= -->
+<div id="homePage">
+
 <!-- شريط الأخبار العلوي -->
 <div class="top-marquee">
 <div class="marquee-inner">
-<i class="fas fa-star" style="margin-left:8px;"></i> 
+<i class="fas fa-star" style="margin-left:8px;"></i>
 ✨ إنجاز: أنشئ تقارير تربوية احترافية بسهولة - حفظ تلقائي - تعبئة ذكية بالذكاء الاصطناعي - معايير أداء محدثة - مشاركة PDF وواتساب - دعم كامل للهواتف - تقارير غير محدودة للمشتركين ✨
 <i class="fas fa-gem" style="margin-right:8px;"></i>
 </div>
 </div>
 
-<!-- ========== المجموعة الأولى: الأزرار الصغيرة ========== -->
+<!-- بطاقة تعريفية بالتطبيق -->
+<div class="brand-promo-card">
+    <div class="brand-promo-icon"><i class="fas fa-arrow-trend-up"></i></div>
+    <h3>إنجاز</h3>
+    <span class="brand-promo-sub">من فكرة إلى تقرير احترافي</span>
+    <p class="brand-promo-title">تقارير تربوية احترافية</p>
+    <p class="brand-promo-desc">بخطوات بسيطة .. لنتائج أكبر</p>
+    <div class="brand-promo-pills">
+        <span><i class="fas fa-shield-halved"></i> دقيق</span>
+        <span><i class="fas fa-bolt"></i> سريع</span>
+        <span><i class="fas fa-circle-check"></i> متوافق مع المعايير</span>
+    </div>
+</div>
+
+<!-- ========== الأزرار الصغيرة (إدارة مسودة التقرير الحالي) ========== -->
 <div class="top-small-buttons">
     <div class="small-buttons-grid">
-        <button class="small-btn" id="saveTeacherBtn" onclick="saveTeacherData()" title="حفظ بيانات المعلم والمدرسة">
+        <button class="small-btn" id="saveTeacherBtn" onclick="saveTeacherData()" title="حفظ بيانات هذا التقرير">
             <i class="fas fa-save small-btn-icon"></i>
             <span class="small-btn-text">حفظ البيانات</span>
         </button>
-        <button class="small-btn" id="clearBtn" onclick="clearData()" title="مسح بيانات المعلم والنصوص المولدة فقط">
+        <button class="small-btn" id="clearBtn" onclick="clearData()" title="مسح بيانات هذا التقرير والنصوص المولدة فقط">
             <i class="fas fa-trash-alt small-btn-icon"></i>
             <span class="small-btn-text">مسح البيانات</span>
-        </button>
-        <button class="small-btn" id="savedReportsBtn" onclick="openSavedReports()" title="عرض التقارير المحفوظة">
-            <i class="fas fa-folder-open small-btn-icon"></i>
-            <span class="small-btn-text">التقارير المحفوظة</span>
-        </button>
-        <button class="small-btn" id="settingsBtn" onclick="openSettings()" title="إعدادات الاشتراك">
-            <i class="fas fa-cog small-btn-icon"></i>
-            <span class="small-btn-text">الضبط</span>
-        </button>
-        <!-- زر تسجيل الخروج الجديد -->
-        <button class="small-btn" id="logoutBtn" onclick="logout()" title="تسجيل الخروج من الأداة (سيتم طلب كود التفعيل مرة أخرى)">
-            <i class="fas fa-sign-out-alt small-btn-icon"></i>
-            <span class="small-btn-text">تسجيل الخروج</span>
         </button>
     </div>
 </div>
@@ -2780,82 +3115,38 @@ button[title]:hover::before {
 <div class="wrapper">
 <div class="input-section">
 
-  <h2><i class="fas fa-tools" style="margin-left:10px;"></i>إنجاز - النظام المتكامل</h2>
-
   <!-- مؤشر تقدم عام (عرض فقط - لا يمثل قاعدة عمل جديدة) -->
   <div class="main-progress-bar">
-    <span class="main-progress-label" id="mainProgressLabel">0 من 7 أقسام</span>
+    <span class="main-progress-label" id="mainProgressLabel">0 من 6 أقسام</span>
     <div class="main-progress-track"><div class="main-progress-fill" id="mainProgressFill"></div></div>
   </div>
 
-  <!-- ===== القسم 1: بيانات التقرير الأساسية ===== -->
+  <!-- حقول لا تُعرض هنا لكن يعتمد عليها منطق التطبيق (الدور ثابت على معلم حالياً) -->
+  <select id="role" name="role" required onchange="handleRoleChange()" style="display:none;">
+    <option value="">اختر الصفة المهنية</option>
+    <option value="teacher" selected>معلم / معلمة</option>
+    <option value="school_principal" disabled>مدير المدرسة / مديرة المدرسة (قريباً 🔒)</option>
+    <option value="vice_principal" disabled>وكيل المدرسة / وكيلة المدرسة (قريباً 🔒)</option>
+    <option value="student_guide" disabled>الموجه الطلابي / الموجهة الطلابية (قريباً 🔒)</option>
+    <option value="health_guide" disabled>الموجه الصحي / الموجهة الصحية (قريباً 🔒)</option>
+    <option value="activity_leader" disabled>رائد النشاط / رائدة النشاط (قريباً 🔒)</option>
+    <option value="educational_supervisor" disabled>المشرف التربوي / المشرفة التربوية (قريباً 🔒)</option>
+  </select>
+
+  <!-- ===== القسم 1: المعايير والفئة المستهدفة ===== -->
   <div class="main-accordion-section" data-section="1">
     <button type="button" class="main-accordion-header" onclick="toggleMainSection(1)">
       <span class="main-accordion-number">1</span>
       <span class="main-accordion-titlewrap">
-        <span class="main-accordion-title"><i class="fas fa-id-card"></i> بيانات التقرير الأساسية</span>
-        <span class="main-accordion-desc">مقدّم التقرير، المدرسة، المكان والزمن</span>
+        <span class="main-accordion-title"><i class="fas fa-clipboard-list"></i> المعايير والفئة المستهدفة</span>
+        <span class="main-accordion-desc">مكان وزمن التنفيذ، عنوان التقرير، معيار الأداء، والمستهدفون</span>
       </span>
-      <span class="main-accordion-status" id="mainSection1Status"><i class="fas fa-circle"></i> لم يبدأ</span>
+      <span class="main-accordion-status" id="mainSection1Status"><i class="fas fa-circle"></i> يحتاج إكمال</span>
       <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection1Chevron"></i>
     </button>
     <div class="main-accordion-body" id="mainSection1">
 
-      <!-- ========== اختيار مقدم التقرير (الدور) ========== -->
-      <!-- تم تعديل القائمة: إضافة disabled و (قريباً 🔒) لجميع الأدوار باستثناء المعلم -->
-      <div class="form-group">
-        <label for="role"><i class="fas fa-user-tie"></i> مقدم التقرير</label>
-        <select id="role" name="role" required onchange="handleRoleChange()">
-          <option value="">اختر الصفة المهنية</option>
-          <option value="teacher" selected>معلم / معلمة</option>
-          <option value="school_principal" disabled>مدير المدرسة / مديرة المدرسة (قريباً 🔒)</option>
-          <option value="vice_principal" disabled>وكيل المدرسة / وكيلة المدرسة (قريباً 🔒)</option>
-          <option value="student_guide" disabled>الموجه الطلابي / الموجهة الطلابية (قريباً 🔒)</option>
-          <option value="health_guide" disabled>الموجه الصحي / الموجهة الصحية (قريباً 🔒)</option>
-          <option value="activity_leader" disabled>رائد النشاط / رائدة النشاط (قريباً 🔒)</option>
-          <option value="educational_supervisor" disabled>المشرف التربوي / المشرفة التربوية (قريباً 🔒)</option>
-        </select>
-      </div>
-
-      <!-- حقول أساسية مشتركة -->
-      <div class="form-group">
-        <label for="education"><i class="fas fa-university"></i> إدارة التعليم</label>
-        <select id="education" oninput="updateReport()">
-          <option value="">اختر إدارة التعليم</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="school"><i class="fas fa-school"></i> اسم المدرسة / المكتب</label>
-        <input id="school" placeholder="اسم المدرسة أو المكتب" oninput="updateReport()">
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="reporterType"><i class="fas fa-chalkboard-teacher"></i> <span id="reporterTypeLabel">صفة مقدم التقرير</span></label>
-          <select id="reporterType" oninput="updateReporterGender()" style="display:none;"></select>
-          <div class="gender-toggle-group" id="reporterTypeToggle" role="group" aria-label="صفة مقدم التقرير">
-            <button type="button" class="gender-toggle-btn" data-value="المعلم" onclick="setReporterType('المعلم')"><i class="fas fa-mars"></i> معلم</button>
-            <button type="button" class="gender-toggle-btn" data-value="المعلمة" onclick="setReporterType('المعلمة')"><i class="fas fa-venus"></i> معلمة</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="reporterName"><i class="fas fa-user"></i> <span id="reporterNameLabel">اسم مقدم التقرير</span></label>
-          <input id="reporterName" placeholder="اسم مقدم التقرير" oninput="updateReport()">
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="principalTypeDisplay"><i class="fas fa-user-cog"></i> صفة المدير (تلقائي)</label>
-          <input type="text" id="principalTypeDisplay" readonly style="background:#f0f0f0;" value="المدير">
-        </div>
-        <div class="form-group">
-          <label for="principal"><i class="fas fa-user-cog"></i> اسم المدير / المسؤول</label>
-          <input id="principal" placeholder="اسم المدير" oninput="updateReport()">
-        </div>
-      </div>
-
+      <!-- ========== مكان وزمن التنفيذ (منقولة من قسم بيانات التقرير الأساسية سابقاً) ========== -->
       <div class="form-row">
         <div class="form-group">
           <label for="place"><i class="fas fa-map-marker-alt"></i> مكان التنفيذ</label>
@@ -2913,22 +3204,6 @@ button[title]:hover::before {
 
       <!-- الحقول الصغيرة الخاصة بالدور (تظهر في الأعلى) -->
       <div id="smallRoleFields" class="small-fields" style="display: none;"></div>
-
-    </div>
-  </div>
-
-  <!-- ===== القسم 2: محتوى النشاط / الدرس ===== -->
-  <div class="main-accordion-section" data-section="2">
-    <button type="button" class="main-accordion-header" onclick="toggleMainSection(2)">
-      <span class="main-accordion-number">2</span>
-      <span class="main-accordion-titlewrap">
-        <span class="main-accordion-title"><i class="fas fa-clipboard-list"></i> المعايير والفئة المستهدفة</span>
-        <span class="main-accordion-desc">عنوان التقرير، معيار الأداء، والمستهدفون</span>
-      </span>
-      <span class="main-accordion-status" id="mainSection2Status"><i class="fas fa-circle"></i> يحتاج إكمال</span>
-      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection2Chevron"></i>
-    </button>
-    <div class="main-accordion-body" id="mainSection2">
 
       <!-- ========== القوائم المتتالية (اختيارية) ========== -->
       <div class="levels-container">
@@ -2995,18 +3270,18 @@ button[title]:hover::before {
     </div>
   </div>
 
-  <!-- ===== القسم 3: المحتوى التربوي ===== -->
-  <div class="main-accordion-section" data-section="3">
-    <button type="button" class="main-accordion-header" onclick="toggleMainSection(3)">
-      <span class="main-accordion-number">3</span>
+  <!-- ===== القسم 2: المحتوى التربوي ===== -->
+  <div class="main-accordion-section" data-section="2">
+    <button type="button" class="main-accordion-header" onclick="toggleMainSection(2)">
+      <span class="main-accordion-number">2</span>
       <span class="main-accordion-titlewrap">
         <span class="main-accordion-title"><i class="fas fa-flag"></i> المحتوى التربوي</span>
-        <span class="main-accordion-desc" id="mainSection3Desc">✨ سيتم تعبئته تلقائيًا بالذكاء الاصطناعي - لا حاجة لتعبئته يدويًا</span>
+        <span class="main-accordion-desc" id="mainSection2Desc">✨ سيتم تعبئته تلقائيًا بالذكاء الاصطناعي - لا حاجة لتعبئته يدويًا</span>
       </span>
-      <span class="main-accordion-status ai-pending" id="mainSection3Status"><i class="fas fa-wand-magic-sparkles"></i> يُنشأ تلقائيًا</span>
-      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection3Chevron"></i>
+      <span class="main-accordion-status ai-pending" id="mainSection2Status"><i class="fas fa-wand-magic-sparkles"></i> يُنشأ تلقائيًا</span>
+      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection2Chevron"></i>
     </button>
-    <div class="main-accordion-body" id="mainSection3">
+    <div class="main-accordion-body" id="mainSection2">
 
       <div class="form-group">
         <label for="goal"><i class="fas fa-flag"></i> <span id="goalLabel">الهدف التربوي</span></label>
@@ -3021,18 +3296,18 @@ button[title]:hover::before {
     </div>
   </div>
 
-  <!-- ===== القسم 4: التنفيذ والاستراتيجيات ===== -->
-  <div class="main-accordion-section" data-section="4">
-    <button type="button" class="main-accordion-header" onclick="toggleMainSection(4)">
-      <span class="main-accordion-number">4</span>
+  <!-- ===== القسم 3: التنفيذ والاستراتيجيات ===== -->
+  <div class="main-accordion-section" data-section="3">
+    <button type="button" class="main-accordion-header" onclick="toggleMainSection(3)">
+      <span class="main-accordion-number">3</span>
       <span class="main-accordion-titlewrap">
         <span class="main-accordion-title"><i class="fas fa-tasks"></i> التنفيذ والاستراتيجيات</span>
-        <span class="main-accordion-desc" id="mainSection4Desc">✨ سيتم تعبئته تلقائيًا بالذكاء الاصطناعي - لا حاجة لتعبئته يدويًا</span>
+        <span class="main-accordion-desc" id="mainSection3Desc">✨ سيتم تعبئته تلقائيًا بالذكاء الاصطناعي - لا حاجة لتعبئته يدويًا</span>
       </span>
-      <span class="main-accordion-status ai-pending" id="mainSection4Status"><i class="fas fa-wand-magic-sparkles"></i> يُنشأ تلقائيًا</span>
-      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection4Chevron"></i>
+      <span class="main-accordion-status ai-pending" id="mainSection3Status"><i class="fas fa-wand-magic-sparkles"></i> يُنشأ تلقائيًا</span>
+      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection3Chevron"></i>
     </button>
-    <div class="main-accordion-body" id="mainSection4">
+    <div class="main-accordion-body" id="mainSection3">
 
       <div class="form-group">
         <label for="steps"><i class="fas fa-tasks"></i> <span id="stepsLabel">إجراءات التنفيذ</span></label>
@@ -3047,18 +3322,18 @@ button[title]:hover::before {
     </div>
   </div>
 
-  <!-- ===== القسم 5: التقييم والتوصيات ===== -->
-  <div class="main-accordion-section" data-section="5">
-    <button type="button" class="main-accordion-header" onclick="toggleMainSection(5)">
-      <span class="main-accordion-number">5</span>
+  <!-- ===== القسم 4: التقييم والتوصيات ===== -->
+  <div class="main-accordion-section" data-section="4">
+    <button type="button" class="main-accordion-header" onclick="toggleMainSection(4)">
+      <span class="main-accordion-number">4</span>
       <span class="main-accordion-titlewrap">
         <span class="main-accordion-title"><i class="fas fa-lightbulb"></i> التقييم والتوصيات</span>
-        <span class="main-accordion-desc" id="mainSection5Desc">✨ سيتم تعبئته تلقائيًا بالذكاء الاصطناعي - لا حاجة لتعبئته يدويًا</span>
+        <span class="main-accordion-desc" id="mainSection4Desc">✨ سيتم تعبئته تلقائيًا بالذكاء الاصطناعي - لا حاجة لتعبئته يدويًا</span>
       </span>
-      <span class="main-accordion-status ai-pending" id="mainSection5Status"><i class="fas fa-wand-magic-sparkles"></i> يُنشأ تلقائيًا</span>
-      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection5Chevron"></i>
+      <span class="main-accordion-status ai-pending" id="mainSection4Status"><i class="fas fa-wand-magic-sparkles"></i> يُنشأ تلقائيًا</span>
+      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection4Chevron"></i>
     </button>
-    <div class="main-accordion-body" id="mainSection5">
+    <div class="main-accordion-body" id="mainSection4">
 
       <div class="form-row">
         <div class="form-group">
@@ -3085,18 +3360,18 @@ button[title]:hover::before {
     </div>
   </div>
 
-  <!-- ===== القسم 6: الأدوات والوسائل التعليمية ===== -->
-  <div class="main-accordion-section" data-section="6">
-    <button type="button" class="main-accordion-header" onclick="toggleMainSection(6)">
-      <span class="main-accordion-number">6</span>
+  <!-- ===== القسم 5: الأدوات والوسائل التعليمية ===== -->
+  <div class="main-accordion-section" data-section="5">
+    <button type="button" class="main-accordion-header" onclick="toggleMainSection(5)">
+      <span class="main-accordion-number">5</span>
       <span class="main-accordion-titlewrap">
         <span class="main-accordion-title"><i class="fas fa-toolbox"></i> الأدوات والوسائل التعليمية</span>
         <span class="main-accordion-desc">اختياري - اختر الأدوات المستخدمة في التنفيذ</span>
       </span>
-      <span class="main-accordion-status optional" id="mainSection6Status"><i class="fas fa-circle"></i> اختياري</span>
-      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection6Chevron"></i>
+      <span class="main-accordion-status optional" id="mainSection5Status"><i class="fas fa-circle"></i> اختياري</span>
+      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection5Chevron"></i>
     </button>
-    <div class="main-accordion-body" id="mainSection6">
+    <div class="main-accordion-body" id="mainSection5">
 
       <!-- قسم الأدوات والوسائل التعليمية - داخل الصف -->
       <div id="insideToolsSection" class="form-group">
@@ -3138,18 +3413,18 @@ button[title]:hover::before {
     </div>
   </div>
 
-  <!-- ===== القسم 7: المرفقات والصور ===== -->
-  <div class="main-accordion-section" data-section="7">
-    <button type="button" class="main-accordion-header" onclick="toggleMainSection(7)">
-      <span class="main-accordion-number">7</span>
+  <!-- ===== القسم 6: المرفقات والصور ===== -->
+  <div class="main-accordion-section" data-section="6">
+    <button type="button" class="main-accordion-header" onclick="toggleMainSection(6)">
+      <span class="main-accordion-number">6</span>
       <span class="main-accordion-titlewrap">
         <span class="main-accordion-title"><i class="fas fa-images"></i> المرفقات والصور</span>
         <span class="main-accordion-desc">صور داعمة للتقرير (اختياري)</span>
       </span>
-      <span class="main-accordion-status optional" id="mainSection7Status"><i class="fas fa-circle"></i> اختياري</span>
-      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection7Chevron"></i>
+      <span class="main-accordion-status optional" id="mainSection6Status"><i class="fas fa-circle"></i> اختياري</span>
+      <i class="fas fa-chevron-down main-accordion-chevron" id="mainSection6Chevron"></i>
     </button>
-    <div class="main-accordion-body" id="mainSection7">
+    <div class="main-accordion-body" id="mainSection6">
 
       <div class="form-row">
         <div class="form-group">
@@ -3167,6 +3442,149 @@ button[title]:hover::before {
 
 </div>
 </div>
+<!-- إغلاق صفحة الرئيسية -->
+</div>
+
+<!-- ================= صفحة حسابي ================= -->
+<div id="accountPage" style="display:none;">
+  <div class="account-page-title">
+    <h2><i class="fas fa-user"></i> حسابي</h2>
+    <p>إدارة حسابك وتخصيص تجربتك</p>
+  </div>
+
+  <!-- ملخص الملف الشخصي -->
+  <div class="account-summary-card">
+    <div class="account-summary-avatar" id="accountAvatar">؟</div>
+    <div class="account-summary-name" id="accountSummaryName">مستخدم إنجاز</div>
+    <div class="account-summary-role" id="accountSummaryRole">معلم</div>
+  </div>
+
+  <!-- بيانات التقرير الأساسية (منقولة من نموذج إنشاء التقرير - تُستخدم في كل تقرير تلقائياً) -->
+  <div class="account-card">
+    <div class="account-card-header">
+      <h3><i class="fas fa-id-card"></i> بيانات التقرير الأساسية</h3>
+    </div>
+
+    <!-- عرض للقراءة فقط -->
+    <div id="accountViewMode" class="account-rows">
+      <div class="account-row"><i class="fas fa-chalkboard-teacher"></i><span class="account-row-label">صفة مقدم التقرير</span><span class="account-row-value" id="accountViewReporterType">—</span></div>
+      <div class="account-row"><i class="fas fa-university"></i><span class="account-row-label">إدارة التعليم</span><span class="account-row-value" id="accountViewEducation">—</span></div>
+      <div class="account-row"><i class="fas fa-school"></i><span class="account-row-label">المدرسة / المكتب</span><span class="account-row-value" id="accountViewSchool">—</span></div>
+      <div class="account-row"><i class="fas fa-user-cog"></i><span class="account-row-label">صفة المدير (تلقائي)</span><span class="account-row-value" id="accountViewPrincipalType">—</span></div>
+      <div class="account-row"><i class="fas fa-user-cog"></i><span class="account-row-label">اسم المدير / المسؤول</span><span class="account-row-value" id="accountViewPrincipal">—</span></div>
+    </div>
+
+    <button type="button" class="account-edit-btn" id="accountEditBtn" onclick="toggleAccountEdit()"><i class="fas fa-pen"></i> تعديل البيانات</button>
+
+    <!-- نموذج التعديل: نفس عناصر الإدخال المستخدمة في تعبئة التقرير، بنفس الـ id تماماً،
+         منقولة إلى هنا فعلياً حتى تبقى updateReport() وحفظ/تحميل ملف PDF بدون أي تغيير. -->
+    <div id="accountEditMode" class="account-edit-form" style="display:none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reporterType"><i class="fas fa-chalkboard-teacher"></i> <span id="reporterTypeLabel">صفة مقدم التقرير</span></label>
+          <select id="reporterType" oninput="updateReporterGender()" style="display:none;"></select>
+          <div class="gender-toggle-group" id="reporterTypeToggle" role="group" aria-label="صفة مقدم التقرير">
+            <button type="button" class="gender-toggle-btn" data-value="المعلم" onclick="setReporterType('المعلم')"><i class="fas fa-mars"></i> معلم</button>
+            <button type="button" class="gender-toggle-btn" data-value="المعلمة" onclick="setReporterType('المعلمة')"><i class="fas fa-venus"></i> معلمة</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reporterName"><i class="fas fa-user"></i> <span id="reporterNameLabel">اسم مقدم التقرير</span></label>
+          <input id="reporterName" placeholder="اسم مقدم التقرير" oninput="updateReport()">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="education"><i class="fas fa-university"></i> إدارة التعليم</label>
+        <select id="education" oninput="updateReport()">
+          <option value="">اختر إدارة التعليم</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="school"><i class="fas fa-school"></i> اسم المدرسة / المكتب</label>
+        <input id="school" placeholder="اسم المدرسة أو المكتب" oninput="updateReport()">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="principalTypeDisplay"><i class="fas fa-user-cog"></i> صفة المدير (تلقائي)</label>
+          <input type="text" id="principalTypeDisplay" readonly style="background:#f0f0f0;" value="المدير">
+        </div>
+        <div class="form-group">
+          <label for="principal"><i class="fas fa-user-cog"></i> اسم المدير / المسؤول</label>
+          <input id="principal" placeholder="اسم المدير" oninput="updateReport()">
+        </div>
+      </div>
+
+      <button type="button" class="account-save-btn" onclick="saveAccountEdits()"><i class="fas fa-check"></i> حفظ البيانات</button>
+    </div>
+  </div>
+
+  <!-- معلومات التطبيق -->
+  <div class="account-card">
+    <div class="account-card-header"><h3><i class="fas fa-circle-info"></i> معلومات التطبيق</h3></div>
+    <button type="button" class="account-link-row" onclick="showInfoPanel('about')"><i class="fas fa-circle-info"></i> عن إنجاز <i class="fas fa-chevron-left account-link-arrow"></i></button>
+    <button type="button" class="account-link-row" onclick="showInfoPanel('privacy')"><i class="fas fa-file-shield"></i> سياسة الخصوصية <i class="fas fa-chevron-left account-link-arrow"></i></button>
+    <button type="button" class="account-link-row" onclick="showInfoPanel('terms')"><i class="fas fa-file-contract"></i> الشروط والأحكام <i class="fas fa-chevron-left account-link-arrow"></i></button>
+  </div>
+</div>
+
+<!-- نافذة عرض معلومات التطبيق (عن إنجاز / الخصوصية / الشروط) -->
+<div id="infoPanelModal" class="drawer-modal-base" style="display:none;" onclick="if(event.target===this) closeInfoPanel()">
+  <div class="drawer-modal-box">
+    <h3 id="infoPanelTitle"><i class="fas fa-circle-info"></i> عن إنجاز</h3>
+    <p id="infoPanelBody" style="line-height:2;color:#333;"></p>
+    <button type="button" onclick="closeInfoPanel()">إغلاق</button>
+  </div>
+</div>
+
+<!-- ========== شريط التنقل السفلي ========== -->
+<nav class="bottom-nav">
+    <button type="button" class="bottom-nav-item active" id="navHome" onclick="showPage('home')">
+        <i class="fas fa-house"></i><span>الرئيسية</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="navSavedReports1" onclick="openSavedReports()">
+        <i class="fas fa-clock-rotate-left"></i><span>التقارير السابقة</span>
+    </button>
+    <button type="button" class="bottom-nav-item bottom-nav-fab" id="navCreate" onclick="showPage('home')">
+        <i class="fas fa-plus"></i>
+    </button>
+    <button type="button" class="bottom-nav-item" id="navSavedReports2" onclick="openSavedReports()">
+        <i class="fas fa-folder-open"></i><span>التقارير المحفوظة</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="navAccount" onclick="showPage('account')">
+        <i class="fas fa-user"></i><span>حسابي</span>
+    </button>
+</nav>
+
+<!-- ========== القائمة الجانبية ========== -->
+<div id="drawerOverlay" class="drawer-overlay" style="display:none;" onclick="closeDrawer()"></div>
+<aside id="sideDrawer" class="side-drawer">
+    <button type="button" class="drawer-close-btn" onclick="closeDrawer()"><i class="fas fa-times"></i></button>
+    <div class="drawer-profile" onclick="showPage('account'); closeDrawer();">
+        <div class="drawer-profile-avatar" id="drawerAvatar">؟</div>
+        <div class="drawer-profile-text">
+            <span class="drawer-profile-name" id="drawerName">مستخدم إنجاز</span>
+            <span class="drawer-profile-role" id="drawerRole">معلم</span>
+        </div>
+        <i class="fas fa-chevron-left"></i>
+    </div>
+    <nav class="drawer-nav">
+        <button type="button" onclick="showPage('home'); closeDrawer();"><i class="fas fa-house"></i> الرئيسية</button>
+        <button type="button" onclick="showPage('home'); closeDrawer();"><i class="fas fa-plus"></i> إنشاء تقرير</button>
+        <button type="button" onclick="openSavedReports(); closeDrawer();"><i class="fas fa-folder-open"></i> التقارير المحفوظة</button>
+        <button type="button" onclick="showAchievements(); closeDrawer();"><i class="fas fa-chart-line"></i> إنجازاتي</button>
+        <button type="button" onclick="showPage('account'); closeDrawer();"><i class="fas fa-user"></i> حسابي</button>
+        <button type="button" onclick="openSettings(); closeDrawer();"><i class="fas fa-cog"></i> الإعدادات</button>
+        <button type="button" onclick="contactForTrial(); closeDrawer();"><i class="fas fa-headset"></i> الدعم والمساعدة</button>
+    </nav>
+    <button type="button" class="drawer-logout-btn" onclick="closeDrawer(); logout();"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</button>
+    <div class="drawer-footer">
+        <p>معاً .. نحو تعليم أفضل</p>
+        <span>الإصدار 1.0.0</span>
+    </div>
+</aside>
 
 <!-- ========== قوالب PDF السبعة (تم تحديث قالب الداخل والخارج) ========== -->
 
@@ -4416,7 +4834,7 @@ function toggleMainSection(n) {
 
     if (willOpen && isMobileAccordionMode()) {
         // على الجوال: أغلق أي قسم آخر مفتوح قبل فتح هذا القسم
-        for (let i = 1; i <= 7; i++) {
+        for (let i = 1; i <= 6; i++) {
             if (i === n) continue;
             const otherBody = document.getElementById('mainSection' + i);
             const otherChevron = document.getElementById('mainSection' + i + 'Chevron');
@@ -4444,42 +4862,33 @@ function isMainSectionFilled(fieldIds) {
 }
 
 // حالة القسم مبنية على منطق التحقق الموجود فعلياً في التطبيق فقط، مع تصنيف كل قسم
-// حسب طبيعته الحقيقية بدل قاعدة واحدة للجميع:
-// - قسم 2: الحقل الحقيقي الوحيد المطلوب (required) في كامل النموذج هو "عنوان التقرير"
+// حسب طبيعته الحقيقية بدل قاعدة واحدة للجميع (بعد إلغاء قسم "بيانات التقرير الأساسية"
+// ونقل بياناته: مكان/زمن التنفيذ إلى قسم 1، وبيانات مقدّم التقرير والمدرسة إلى صفحة الحساب):
+// - قسم 1: الحقل الحقيقي الوحيد المطلوب (required) في كامل النموذج هو "عنوان التقرير"
 //   (نفس شرط saveCurrentReport تماماً) - فقط هذا القسم يمكن أن يظهر "يحتاج إكمال" حقيقية.
-// - أقسام 3/4/5: تُعبّأ بالذكاء الاصطناعي (تعبئة ذكية) دفعة واحدة عبر fillWithAI/
+// - أقسام 2/3/4: تُعبّأ بالذكاء الاصطناعي (تعبئة ذكية) دفعة واحدة عبر fillWithAI/
 //   parseAIResponseProfessional في نفس هذه الحقول تحديداً - قبل التوليد لا يوجد شيء لتفعله
 //   يدوياً، وبعده يبقى النص قابلاً للتعديل كأي حقل نصي عادي (لا يوجد قفل أو نسخة منفصلة).
-// - أقسام 6/7: اختيارية بالكامل ولا تمثل أي متطلب حقيقي في النموذج.
-// - قسم 1: لا حقل مطلوب فعلياً فيه (role/place لهما قيمة افتراضية دائماً وتم استبعادهما)،
-//   لذلك حالته "لم يبدأ" أو "مكتمل" حسب وجود محتوى فعلي أدخله المستخدم.
+// - أقسام 5/6: اختيارية بالكامل ولا تمثل أي متطلب حقيقي في النموذج.
 function getMainSectionState(n) {
-    const OPTIONAL_ONLY_FIELDS = {
-        1: ['education', 'school', 'reporterName', 'principal', 'term', 'grade', 'subject', 'lesson'],
-    };
     const AI_FIELDS = {
-        3: ['goal', 'summary'],
-        4: ['steps', 'strategies'],
-        5: ['strengths', 'improve', 'recomm'],
+        2: ['goal', 'summary'],
+        3: ['steps', 'strategies'],
+        4: ['strengths', 'improve', 'recomm'],
     };
 
-    if (n === 2) {
+    if (n === 1) {
         const titleFilled = !!document.getElementById('manualReportTitle')?.value.trim();
         return titleFilled ? 'complete' : 'incomplete';
     }
 
-    if (n === 3 || n === 4 || n === 5) {
+    if (n === 2 || n === 3 || n === 4) {
         const hasContent = isMainSectionFilled(AI_FIELDS[n]);
         return hasContent ? 'ai_done' : 'ai_pending';
     }
 
-    if (n === 6 || n === 7) {
-        return 'optional';
-    }
-
-    // قسم 1
-    const hasContent = isMainSectionFilled(OPTIONAL_ONLY_FIELDS[n] || []);
-    return hasContent ? 'complete' : 'not_started';
+    // أقسام 5/6
+    return 'optional';
 }
 
 const MAIN_SECTION_STATUS_LABELS = {
@@ -4493,13 +4902,13 @@ const MAIN_SECTION_STATUS_LABELS = {
 
 function updateMainSectionsProgress() {
     // شريط التقدم العام يعكس فقط الأقسام التي تمثل مسؤولية حقيقية على المستخدم
-    // (١ و٢) أو ناتج ذكاء اصطناعي ينتظر أو تم إنشاؤه (٣/٤/٥) - الأقسام الاختيارية
-    // بالكامل (٦/٧) لا تُحتسب ضمن العدد حتى لا يشعر المستخدم بأنه "لم يُكمل" شيئاً
+    // (١) أو ناتج ذكاء اصطناعي ينتظر أو تم إنشاؤه (٢/٣/٤) - الأقسام الاختيارية
+    // بالكامل (٥/٦) لا تُحتسب ضمن العدد حتى لا يشعر المستخدم بأنه "لم يُكمل" شيئاً
     // لا يخصه أصلاً.
     let doneCount = 0;
     let trackedCount = 0;
 
-    for (let n = 1; n <= 7; n++) {
+    for (let n = 1; n <= 6; n++) {
         const state = getMainSectionState(n);
         const info = MAIN_SECTION_STATUS_LABELS[state];
 
@@ -4552,6 +4961,7 @@ function updateReport() {
     const place = document.getElementById('place').value;
 
     syncReporterTypeToggle();
+    renderAccountSummary();
 
     const educationBox = document.getElementById('educationBox');
     if (educationBox) educationBox.innerText = document.getElementById('education').value || 'غير محدد';
@@ -5328,25 +5738,23 @@ function showGuideBox() {
 function saveTeacherData() {
     saveCurrentReport();
     saveAccountProfile(); // حفظ إضافي إلى الحساب (لا يوقف أو يغيّر الحفظ المحلي أدناه)
+    // ملاحظة: education/school/reporterName/principal/reporterType/role أصبحت بيانات
+    // حساب دائمة تُدار من صفحة "حسابي" عبر saveAccountProfile/loadAccountProfile - لم
+    // تعد جزءاً من مسودة التقرير المحلية (teacherData) حتى لا تُستبدل قيمة محدّثة في
+    // الحساب بنسخة قديمة محفوظة محلياً عند تحميل الصفحة.
     const teacherData = {
-        education: document.getElementById('education').value,
-        school: document.getElementById('school').value,
         grade: document.getElementById('grade')?.value || '',
         subject: document.getElementById('subject')?.value || '',
         target: document.getElementById('target').value,
         place: document.getElementById('place').value,
         detailedPlace: getDetailedPlaceValue(),
         lesson: document.getElementById('lesson')?.value || '',
-        reporterName: document.getElementById('reporterName').value,
-        principal: document.getElementById('principal').value,
-        reporterType: document.getElementById('reporterType').value,
         term: document.getElementById('term').value,
         count: document.getElementById('count').value,
         manualTitle: document.getElementById('manualReportTitle').value,
         criterion: document.getElementById('criterionSelect').value,
         subcategory: document.getElementById('subcategorySelect').value,
         report: document.getElementById('reportSelect').value,
-        role: document.getElementById('role').value,
         tools: [],
         otherTools: window.otherTools,
         otherToolsInside: window.otherToolsInside
@@ -5390,31 +5798,16 @@ function loadTeacherData() {
     const savedData = localStorage.getItem('teacherData');
     if (savedData) {
         const teacherData = JSON.parse(savedData);
-        document.getElementById('education').value = teacherData.education || '';
-        document.getElementById('school').value = teacherData.school || '';
+        // education/school/reporterName/principal/reporterType/role لم تعد تُقرأ من هنا -
+        // أصبحت بيانات حساب دائمة تُدار عبر loadAccountProfile() من صفحة "حسابي".
         if (document.getElementById('grade')) document.getElementById('grade').value = teacherData.grade || '';
         if (document.getElementById('subject')) document.getElementById('subject').value = teacherData.subject || '';
         document.getElementById('target').value = teacherData.target || '';
         document.getElementById('place').value = teacherData.place || 'داخل الصف';
         if (document.getElementById('lesson')) document.getElementById('lesson').value = teacherData.lesson || '';
-        document.getElementById('reporterName').value = teacherData.reporterName || '';
-        document.getElementById('principal').value = teacherData.principal || '';
-        document.getElementById('reporterType').value = teacherData.reporterType || 'المعلم';
         document.getElementById('term').value = teacherData.term || '';
         document.getElementById('count').value = teacherData.count || '';
         document.getElementById('manualReportTitle').value = teacherData.manualTitle || '';
-        if (teacherData.role) {
-            // التأكد من أن الدور المحفوظ هو teacher
-            const savedRole = teacherData.role;
-            if (savedRole !== 'teacher') {
-                document.getElementById('role').value = 'teacher';
-                showNotification('تم تحميل البيانات مع تعيين دور المعلم (الأدوار الأخرى غير متاحة حالياً)');
-            } else {
-                document.getElementById('role').value = savedRole;
-            }
-            const backendRole = getBackendRole('teacher');
-            loadDataFromBackend(backendRole);
-        }
         if (teacherData.detailedPlace) {
             const detailedPlaceSelect = document.getElementById('detailedPlaceSelect');
             const detailedPlaceInput = document.getElementById('detailedPlaceInput');
@@ -5460,11 +5853,10 @@ function loadTeacherData() {
 }
 
 function clearData() {
-    if (confirm("هل أنت متأكد من مسح بيانات مقدم التقرير والنصوص المولدة؟")) {
-        document.getElementById('education').value = '';
-        document.getElementById('school').value = '';
-        document.getElementById('reporterName').value = '';
-        document.getElementById('principal').value = '';
+    // ملاحظة: إدارة التعليم/المدرسة/اسم مقدّم التقرير/اسم المدير أصبحت بيانات حساب دائمة
+    // تُدار من صفحة "حسابي" (وتُحفظ في جدول profiles) - لم تعد تُمسح عند مسح بيانات
+    // التقرير الحالي، حتى لا يضطر المستخدم لإعادة إدخالها مع كل تقرير جديد.
+    if (confirm("هل أنت متأكد من مسح بيانات هذا التقرير والنصوص المولدة؟")) {
         if (document.getElementById('grade')) document.getElementById('grade').value = '';
         document.getElementById('term').value = '';
         if (document.getElementById('subject')) document.getElementById('subject').value = '';
@@ -5524,6 +5916,8 @@ async function downloadPDF() {
     document.querySelector('.top-small-buttons').style.visibility = 'hidden';
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'hidden';
+    document.querySelector('.app-header').style.visibility = 'hidden';
+    document.querySelector('.bottom-nav').style.visibility = 'hidden';
     document.getElementById('aiFillFloatingBtn').style.visibility = 'hidden';
     document.body.style.margin = "0";
     document.body.style.background = "white";
@@ -5550,6 +5944,8 @@ async function downloadPDF() {
         document.querySelector('.top-small-buttons').style.visibility = 'visible';
         document.querySelector('.main-buttons-bar').style.visibility = 'visible';
         document.querySelector('.top-marquee').style.visibility = 'visible';
+        document.querySelector('.app-header').style.visibility = 'visible';
+        document.querySelector('.bottom-nav').style.visibility = 'visible';
         document.getElementById('aiFillFloatingBtn').style.visibility = 'visible';
         document.body.style.margin = "";
         document.body.style.background = "#f9fcfb";
@@ -5563,6 +5959,8 @@ async function sharePDFWhatsApp() {
     document.querySelector('.top-small-buttons').style.visibility = 'hidden';
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'visible';
+    document.querySelector('.app-header').style.visibility = 'hidden';
+    document.querySelector('.bottom-nav').style.visibility = 'hidden';
     document.getElementById('aiFillFloatingBtn').style.visibility = 'hidden';
     document.body.style.margin = "0";
     document.body.style.background = "white";
@@ -5590,6 +5988,8 @@ async function sharePDFWhatsApp() {
         document.querySelector('.top-small-buttons').style.visibility = 'visible';
         document.querySelector('.main-buttons-bar').style.visibility = 'visible';
         document.querySelector('.top-marquee').style.visibility = 'visible';
+        document.querySelector('.app-header').style.visibility = 'visible';
+        document.querySelector('.bottom-nav').style.visibility = 'visible';
         document.getElementById('aiFillFloatingBtn').style.visibility = 'visible';
         document.body.style.margin = "";
         document.body.style.background = "#f9fcfb";
@@ -5627,6 +6027,114 @@ function openSettings() {
 
 function closeSettings() {
     document.getElementById("settingsModal").style.display = "none";
+}
+
+// ==================== التنقل بين الصفحات (الرئيسية / حسابي) + القائمة الجانبية ====================
+// تبديل عرض/إخفاء فقط - لا يوجد راوتر حقيقي ولا تغيير في الرابط، تماماً كبقية
+// النوافذ المنبثقة الموجودة أصلاً في التطبيق (الإعدادات، التقارير المحفوظة).
+function showPage(name) {
+    const home = document.getElementById('homePage');
+    const account = document.getElementById('accountPage');
+    const aiBtn = document.getElementById('aiFillFloatingBtn');
+    if (name === 'account') {
+        if (home) home.style.display = 'none';
+        if (account) account.style.display = 'block';
+        if (aiBtn) aiBtn.style.display = 'none'; // خاص بتعبئة نموذج التقرير في الرئيسية فقط
+        renderAccountSummary();
+    } else {
+        if (account) account.style.display = 'none';
+        if (home) home.style.display = 'block';
+        if (aiBtn) aiBtn.style.display = 'flex';
+    }
+    document.getElementById('navHome')?.classList.toggle('active', name !== 'account');
+    document.getElementById('navAccount')?.classList.toggle('active', name === 'account');
+    window.scrollTo(0, 0);
+}
+
+function openDrawer() {
+    document.getElementById('sideDrawer')?.classList.add('open');
+    document.getElementById('drawerOverlay').style.display = 'block';
+}
+
+function closeDrawer() {
+    document.getElementById('sideDrawer')?.classList.remove('open');
+    document.getElementById('drawerOverlay').style.display = 'none';
+}
+
+// ميزة "إنجازاتي" لم تُصمَّم بعد بشكل كامل - عنصر نائب مؤقت حتى تحديد محتواها.
+function showAchievements() {
+    showNotification('قسم "إنجازاتي" قريباً ✨');
+}
+
+const INFO_PANEL_CONTENT = {
+    about: {
+        title: 'عن إنجاز',
+        body: 'إنجاز أداة تساعد المعلمين والمعلمات على إنشاء تقارير تربوية احترافية بسهولة، مع تعبئة ذكية بالذكاء الاصطناعي ومشاركة مباشرة عبر PDF وواتساب.'
+    },
+    privacy: {
+        title: 'سياسة الخصوصية',
+        body: 'سيتم إضافة سياسة الخصوصية الكاملة هنا قريباً. لأي استفسار حول بياناتك، تواصل معنا عبر "الدعم والمساعدة".'
+    },
+    terms: {
+        title: 'الشروط والأحكام',
+        body: 'سيتم إضافة الشروط والأحكام الكاملة هنا قريباً. لأي استفسار، تواصل معنا عبر "الدعم والمساعدة".'
+    }
+};
+
+function showInfoPanel(key) {
+    const info = INFO_PANEL_CONTENT[key];
+    if (!info) return;
+    document.getElementById('infoPanelTitle').innerHTML = '<i class="fas fa-circle-info"></i> ' + info.title;
+    document.getElementById('infoPanelBody').textContent = info.body;
+    document.getElementById('infoPanelModal').style.display = 'flex';
+}
+
+function closeInfoPanel() {
+    document.getElementById('infoPanelModal').style.display = 'none';
+}
+
+// ==================== صفحة "حسابي": عرض / تعديل بيانات التقرير الأساسية ====================
+function toggleAccountEdit() {
+    const editMode = document.getElementById('accountEditMode');
+    const isOpen = editMode.style.display === 'block';
+    editMode.style.display = isOpen ? 'none' : 'block';
+    document.getElementById('accountViewMode').style.display = isOpen ? 'block' : 'none';
+    document.getElementById('accountEditBtn').style.display = isOpen ? 'inline-flex' : 'none';
+}
+
+function saveAccountEdits() {
+    saveAccountProfile();
+    updateReport();
+    renderAccountSummary();
+    document.getElementById('accountEditMode').style.display = 'none';
+    document.getElementById('accountViewMode').style.display = 'block';
+    document.getElementById('accountEditBtn').style.display = 'inline-flex';
+    showNotification('تم حفظ بيانات الحساب بنجاح!');
+}
+
+// يحدّث كلاً من: رأس التطبيق العلوي، القائمة الجانبية، وصفحة "حسابي" - من نفس
+// الحقول المستخدمة فعلياً في التقرير (لا يمثل مصدر بيانات إضافي).
+function renderAccountSummary() {
+    const name = document.getElementById('reporterName')?.value.trim() || 'مستخدم إنجاز';
+    const type = document.getElementById('reporterType')?.value || 'المعلم';
+    const roleLabel = type === 'المعلمة' ? 'معلمة' : 'معلم';
+    const initial = name.charAt(0) || '؟';
+
+    ['headerAvatar', 'accountAvatar', 'drawerAvatar'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = initial; });
+    const headerGreeting = document.getElementById('headerGreeting');
+    if (headerGreeting) headerGreeting.textContent = 'أهلاً ' + name;
+    ['headerRole', 'accountSummaryRole', 'drawerRole'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = roleLabel; });
+    const accountSummaryName = document.getElementById('accountSummaryName');
+    if (accountSummaryName) accountSummaryName.textContent = name;
+    const drawerName = document.getElementById('drawerName');
+    if (drawerName) drawerName.textContent = name;
+
+    const setView = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value && value.trim() ? value : '—'; };
+    setView('accountViewReporterType', roleLabel);
+    setView('accountViewEducation', document.getElementById('education')?.value);
+    setView('accountViewSchool', document.getElementById('school')?.value);
+    setView('accountViewPrincipalType', document.getElementById('principalTypeDisplay')?.value);
+    setView('accountViewPrincipal', document.getElementById('principal')?.value);
 }
 
 // يقرأ حالة الحساب مباشرة من جدول entitlements عبر Supabase (RLS تسمح للمستخدم
