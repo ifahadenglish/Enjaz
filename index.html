@@ -4355,7 +4355,14 @@ async function handleGoogleSignIn() {
         clearAuthMessage();
         const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.href.split('#')[0].split('?')[0] }
+            options: {
+                redirectTo: window.location.href.split('#')[0].split('?')[0],
+                // نجبر Google دائماً على إظهار قائمة اختيار الحساب، بدل تسجيل الدخول
+                // تلقائياً وبصمت بأي حساب Google مفعّل مسبقاً على الجهاز (وقد يكون
+                // حساب شخص آخر يستخدم نفس الجهاز) - وهو ما كان يسبب ظهور حساب/بيانات
+                // مختلفة تماماً عن حساب المستخدم الحقيقي دون أي تنبيه له.
+                queryParams: { prompt: 'select_account' },
+            }
         });
         if (error) showAuthMessage('تعذر بدء تسجيل الدخول عبر Google', 'error');
         // عند النجاح، Supabase يحوّل المتصفح مباشرة إلى صفحة Google - لا حاجة لأي إجراء إضافي هنا.
@@ -4472,7 +4479,7 @@ async function onAuthenticated() {
     // ننتظر انتهاء إعادة بناء قوائم الاختيار (مثل "إدارة التعليم") قبل تعبئة بيانات
     // الحساب، وإلا فإن إعادة البناء قد تمسح القيمة التي عبّأناها للتو من الحساب.
     await loadDataFromBackend(backendRole);
-    loadAccountProfile();
+    await loadAccountProfile();
     loadDates(); // لتعبئة بطاقة التاريخ في لوحة تحكم الحاسوب فور الدخول
     updateDesktopStats();
 }
@@ -4528,13 +4535,21 @@ async function saveAccountProfile() {
         const userId = sessionData?.session?.user?.id;
         if (!userId) return false;
 
-        const payload = {
-            reporter_name: document.getElementById('reporterName').value || null,
-            reporter_type: document.getElementById('reporterType').value || null,
-            education: document.getElementById('education').value || null,
-            school: document.getElementById('school').value || null,
-            principal: document.getElementById('principal').value || null,
+        // نُرسل فقط الحقول التي تحمل قيمة فعلية الآن - لا نُرسل حقلاً فارغاً كـ null، حتى لا
+        // نمحو بيانات حقيقية محفوظة سابقاً على الخادم بسبب حقل لم يُحمَّل بعد في هذا الجهاز
+        // (مثلاً إن حدث الحفظ قبل اكتمال loadAccountProfile، أو تأخر الاتصال بالشبكة).
+        const fields = {
+            reporter_name: document.getElementById('reporterName').value,
+            reporter_type: document.getElementById('reporterType').value,
+            education: document.getElementById('education').value,
+            school: document.getElementById('school').value,
+            principal: document.getElementById('principal').value,
         };
+        const payload = {};
+        Object.keys(fields).forEach((key) => {
+            if (fields[key]) payload[key] = fields[key];
+        });
+        if (Object.keys(payload).length === 0) return true; // لا يوجد شيء لحفظه فعلياً
 
         // update فقط (وليس upsert): صف profiles لهذا المستخدم موجود مسبقاً دائماً (يُنشأ
         // تلقائياً عند التسجيل). upsert كان يفشل فعلياً بخطأ 400 من الخادم لأنه ينفّذ
