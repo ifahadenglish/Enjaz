@@ -2941,10 +2941,30 @@ button[title]:hover::before {
     .bottom-nav-item:not(.bottom-nav-fab) { display: none; }
     .bottom-nav-fab {
         margin-top: 0;
+        flex-direction: row;
+        align-items: center;
+        gap: 11px;
         background: #fff;
-        padding: 10px 16px 8px;
-        border-radius: 18px;
-        box-shadow: 0 8px 24px rgba(4,74,53,0.2);
+        padding: 9px 24px 9px 12px;
+        border-radius: 40px;
+        box-shadow: 0 10px 28px rgba(4,74,53,0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .bottom-nav-fab:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 34px rgba(4,74,53,0.3);
+    }
+    #aiFillFloatingBtn .fab-icon-circle {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+    }
+    #aiFillFloatingBtn .floating-ai-icon {
+        font-size: 18px;
+    }
+    #aiFillFloatingBtn .floating-ai-text {
+        font-size: 14.5px;
+        font-weight: 800;
     }
 
     /* ---- حجز مساحة على يمين الصفحة للشريط الجانبي ---- */
