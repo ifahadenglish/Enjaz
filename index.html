@@ -6339,7 +6339,16 @@ function loadSavedReportDate() {
 document.addEventListener("DOMContentLoaded", async () => {
     // يتحقق من وجود جلسة Supabase محفوظة (بدلاً من كود تفعيل في localStorage)
     const { data: sessionData } = await supabaseClient.auth.getSession();
-    if (sessionData?.session) {
+    // كانت هذه الحالة (جلسة جاهزة فوراً هنا) تكتفي بإخفاء شاشة التفعيل دون استدعاء
+    // onAuthenticated() إطلاقاً - وهذا هو السبب الحقيقي لعدم ظهور بيانات الحساب أبداً بعد
+    // الدخول عبر Google تحديداً: بعد إعادة التوجيه من Google، تكون الجلسة جاهزة هنا فوراً
+    // (getSession تعيدها مباشرة) قبل أن يصل حدث onAuthStateChange('SIGNED_IN') أدناه، وكان
+    // هذا الكود يضبط __ACTIVATED__=true فيتسبب بتخطي onAuthStateChange للنداء لاحقاً بسبب
+    // شرط !window.__ACTIVATED__ - فلا يُستدعى loadAccountProfile إطلاقاً في هذا المسار.
+    // بينما الدخول بكلمة المرور يعمل بشكل مختلف تماماً (استدعاء مباشر من handleLogin بعيداً
+    // عن DOMContentLoaded تماماً) ولهذا لم تظهر المشكلة إلا مع Google تحديداً.
+    const hadExistingSession = !!sessionData?.session;
+    if (hadExistingSession) {
         window.__ACTIVATED__ = true;
         hideActivationScreen();
     } else {
@@ -6366,6 +6375,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.addEventListener('click', function(e) { if (!e.target.closest('#reportSearchContainer')) document.getElementById('searchResults').style.display = 'none'; });
     window.addEventListener('resize', () => {});
     document.getElementById('aiGuideBox').style.display = 'none';
+    // نستدعي onAuthenticated() هنا (بعد اكتمال تعبئة القوائم والبيانات المحلية أعلاه)، وليس
+    // فور اكتشاف الجلسة أعلاه، حتى لا تُعاد بيانات الحساب القادمة من الخادم (مثل "إدارة
+    // التعليم") إلى الفراغ بسبب إعادة بناء القوائم المحلية التي تجري لاحقاً في هذه الدالة.
+    if (hadExistingSession) {
+        await onAuthenticated();
+    }
 });
 </script>
 </body>
