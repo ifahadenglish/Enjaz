@@ -1003,11 +1003,13 @@ button[title]:hover::before {
 }
 
 /* أكورديون قسم الأدوات والوسائل التعليمية */
+/* عنوان فرعي ثابت (غير قابل للطي) داخل قسم "الأدوات والوسائل التعليمية" - كان أكورديوناً
+   قابلاً للطي بشكل مستقل، فبدا للمستخدم وكأن هناك أكورديونين متداخلين فوق بعضهما لنفس
+   المحتوى (القسم الرئيسي 5 نفسه + هذا العنوان الداخلي)، لذا أصبح الآن مجرد عنوان ثابت. */
 .accordion-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
     padding: 12px 14px;
     background: #f8fdfa;
     border: 1px solid #d4ebe2;
@@ -1017,10 +1019,6 @@ button[title]:hover::before {
     color: #066d4d;
     user-select: none;
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-.accordion-header:hover {
-    background: #f0f9f6;
 }
 
 .accordion-icon {
@@ -3415,9 +3413,8 @@ button[title]:hover::before {
 
       <!-- قسم الأدوات والوسائل التعليمية - داخل الصف -->
       <div id="insideToolsSection" class="form-group">
-        <div class="accordion-header" onclick="toggleToolsAccordion('toolsSection')">
+        <div class="accordion-header">
           <span><i class="fas fa-tools"></i> الأدوات والوسائل التعليمية (داخل الصف)</span>
-          <i class="fas fa-chevron-down accordion-icon rotated" id="toolsSectionIcon"></i>
         </div>
         <div class="tools-section accordion-body open" id="toolsSection">
           <div class="tools-grid" id="toolsGrid">
@@ -3436,9 +3433,8 @@ button[title]:hover::before {
 
       <!-- قسم الأدوات والوسائل التعليمية - خارج الصف -->
       <div id="outsideToolsSection" class="form-group" style="display: none;">
-        <div class="accordion-header" onclick="toggleToolsAccordion('outsideToolsSection2')">
+        <div class="accordion-header">
           <span><i class="fas fa-tools"></i> الأدوات والوسائل (خارج الصف)</span>
-          <i class="fas fa-chevron-down accordion-icon rotated" id="outsideToolsSection2Icon"></i>
         </div>
         <div class="tools-section accordion-body open" id="outsideToolsSection2">
           <div class="tools-outside-grid" id="outsideToolsGrid"></div>
@@ -6068,6 +6064,40 @@ function getActiveReportTemplate() {
     return template;
 }
 
+// px لكل مليمتر عند الدقة القياسية التي تعتمدها المتصفحات لوحدة mm في CSS (96dpi) - تُستخدم
+// لتحويل الارتفاع الفعلي المُقاس للتقرير (بالبكسل) إلى مليمترات لمقارنته بارتفاع صفحة A4.
+const PX_PER_MM = 96 / 25.4;
+
+// يكتشف إن كان التقرير سيتجاوز ارتفاع صفحة A4 الواحدة (297مم) عند التصدير، وهو ما يتسبب في
+// انبثاق صفحة ثانية شبه فارغة لا تحوي إلا جزءاً ضئيلاً متبقياً من المحتوى (مشكلة معروفة في
+// html2pdf عند تقسيمه التلقائي للمحتوى الطويل). نترك هامش أمان بسيطاً (296 بدل 297).
+function reportExceedsOnePageA4(element) {
+    return (element.scrollHeight / PX_PER_MM) > 296;
+}
+
+// يلتقط التقرير كصورة واحدة كاملة (بلا تقسيم تلقائي على صفحات) ويضعها بحجم صفحة A4 الكامل
+// تماماً (210×297مم، بلا هوامش) - فرق بصري غير محسوس عملياً لأن التجاوز عادة طفيف جداً (بضعة
+// مليمترات فقط)، بدل تقسيم المحتوى فعلياً على صفحتين أو تصغيره بوضوح مع هوامش بيضاء حوله.
+// تُستخدم هذه الطريقة فقط عند اكتشاف تجاوز فعلي عبر reportExceedsOnePageA4 أعلاه - التقارير
+// التي تدخل ضمن صفحة واحدة بشكل طبيعي تستمر بالمسار الافتراضي (html2pdf) دون أي تغيير.
+async function captureReportAsSinglePageA4Pdf(element) {
+    try {
+        const canvas = await html2canvas(element, {
+            scale: 3, useCORS: true, scrollY: 0, backgroundColor: '#ffffff',
+            onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; }
+        });
+        const JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : null;
+        if (!JsPDFCtor) return null; // احتياط: نعود للمسار الافتراضي إن تعذّر الوصول لمكتبة jsPDF لأي سبب
+        const imgData = canvas.toDataURL('image/jpeg', 0.95);
+        const pdf = new JsPDFCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+        return pdf;
+    } catch (e) {
+        console.error('تعذر إنشاء PDF بصفحة واحدة، سيتم استخدام المسار الافتراضي:', e);
+        return null;
+    }
+}
+
 async function downloadPDF() {
     await loadDates();
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
@@ -6092,11 +6122,7 @@ async function downloadPDF() {
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    html2pdf().set({
-        filename: cleanFileName + ".pdf",
-        html2canvas: { scale: 3, useCORS: true, scrollY: 0, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-    }).from(element).save().then(() => {
+    const restoreUiAfterExport = () => {
         document.querySelector('.main-buttons-bar').style.visibility = 'visible';
         document.querySelector('.top-marquee').style.visibility = 'visible';
         document.querySelector('.app-header').style.visibility = 'visible';
@@ -6106,7 +6132,22 @@ async function downloadPDF() {
         document.body.style.background = "#f9fcfb";
         element.style.display = 'none';
         showNotification("تم تنزيل التقرير بصيغة PDF!");
-    });
+    };
+
+    if (reportExceedsOnePageA4(element)) {
+        const pdf = await captureReportAsSinglePageA4Pdf(element);
+        if (pdf) {
+            pdf.save(cleanFileName + ".pdf");
+            restoreUiAfterExport();
+            return;
+        }
+    }
+
+    html2pdf().set({
+        filename: cleanFileName + ".pdf",
+        html2canvas: { scale: 3, useCORS: true, scrollY: 0, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    }).from(element).save().then(restoreUiAfterExport);
 }
 
 async function sharePDFWhatsApp() {
@@ -6133,12 +6174,7 @@ async function sharePDFWhatsApp() {
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
-    await html2pdf().set({
-        margin: 0,
-        image: { type: "jpeg", quality: 1 },
-        html2canvas: { scale: 3, scrollY: 0, useCORS: true, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-    }).from(element).toPdf().output('blob').then((pdfBlob) => {
+    const handlePdfBlob = (pdfBlob) => {
         document.querySelector('.main-buttons-bar').style.visibility = 'visible';
         document.querySelector('.top-marquee').style.visibility = 'visible';
         document.querySelector('.app-header').style.visibility = 'visible';
@@ -6169,7 +6205,22 @@ async function sharePDFWhatsApp() {
             window.open(`https://wa.me/?text=${encodeURIComponent(waText)}`, "_blank");
             showNotification("تم تنزيل التقرير — افتح مرفقات واتساب وأرفقه يدوياً 📎");
         }
-    });
+    };
+
+    if (reportExceedsOnePageA4(element)) {
+        const pdf = await captureReportAsSinglePageA4Pdf(element);
+        if (pdf) {
+            handlePdfBlob(pdf.output('blob'));
+            return;
+        }
+    }
+
+    await html2pdf().set({
+        margin: 0,
+        image: { type: "jpeg", quality: 1 },
+        html2canvas: { scale: 3, scrollY: 0, useCORS: true, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    }).from(element).toPdf().output('blob').then(handlePdfBlob);
 }
 
 function openSettings() {
