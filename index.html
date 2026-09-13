@@ -6125,6 +6125,11 @@ async function downloadPDF() {
     document.querySelector('.app-header').style.visibility = 'hidden';
     document.querySelector('.bottom-nav').style.visibility = 'hidden';
     document.getElementById('aiFillFloatingBtn').style.visibility = 'hidden';
+    // الشريط الجانبي الثابت لواجهة الحاسوب (.desktop-sidebar) عنصر position:fixed معتم بعرض
+    // 230px يبقى ظاهراً فوق كل شيء (z-index:500) ولم يكن ضمن قائمة العناصر التي تُخفى أثناء
+    // التصدير - لذلك كان يظهر فوق التقرير في لقطة html2canvas على شاشات الحاسوب تحديداً
+    // (٬غير موجود على الجوال أصلاً)، مما ينتج ملف PDF أبيض/فارغاً هناك فقط.
+    document.querySelector('.desktop-sidebar').style.visibility = 'hidden';
     document.body.style.margin = "0";
     document.body.style.background = "white";
 
@@ -6147,6 +6152,7 @@ async function downloadPDF() {
         document.querySelector('.top-marquee').style.visibility = 'visible';
         document.querySelector('.app-header').style.visibility = 'visible';
         document.querySelector('.bottom-nav').style.visibility = 'visible';
+        document.querySelector('.desktop-sidebar').style.visibility = 'visible';
         document.getElementById('aiFillFloatingBtn').style.visibility = 'visible';
         document.body.style.margin = "";
         document.body.style.background = "#f9fcfb";
@@ -6175,6 +6181,7 @@ async function sharePDFWhatsApp() {
     document.querySelector('.app-header').style.visibility = 'hidden';
     document.querySelector('.bottom-nav').style.visibility = 'hidden';
     document.getElementById('aiFillFloatingBtn').style.visibility = 'hidden';
+    document.querySelector('.desktop-sidebar').style.visibility = 'hidden';
     document.body.style.margin = "0";
     document.body.style.background = "white";
 
@@ -6197,6 +6204,7 @@ async function sharePDFWhatsApp() {
         document.querySelector('.top-marquee').style.visibility = 'visible';
         document.querySelector('.app-header').style.visibility = 'visible';
         document.querySelector('.bottom-nav').style.visibility = 'visible';
+        document.querySelector('.desktop-sidebar').style.visibility = 'visible';
         document.getElementById('aiFillFloatingBtn').style.visibility = 'visible';
         document.body.style.margin = "";
         document.body.style.background = "#f9fcfb";
