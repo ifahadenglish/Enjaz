@@ -627,11 +627,14 @@ html, body {
 }
 
 @media (min-width: 1024px) {
-    /* ملاحظة: showAuthScreen() في JS تضبط display:flex كنمط inline على العنصر مباشرة،
-       والأنماط inline تتفوق على أي قاعدة CSS عادية - لذلك display هنا !important
-       فقط ضمن هذا الاستعلام الإعلامي (١٠٢٤px فأكثر) دون المساس بالجوال أو بمنطق JS. */
+    /* ملاحظة: showAuthScreen() في JS تضبط الآن display:grid مباشرة كنمط inline على
+       هذا العنصر عند العرض على شاشات الحاسوب (بدل الاعتماد على !important هنا)، لأن
+       الأنماط inline تتفوق دوماً على أي قاعدة CSS عادية - وأي !important هنا كان
+       سيبطل أيضاً display:none التي تضبطها hideActivationScreen() بعد تسجيل الدخول
+       بنجاح، مما كان يُبقي شاشة الدخول ظاهرة رغم نجاح الدخول فعلياً. القاعدة هنا الآن
+       مجرد قيمة احتياطية (fallback) قبل أن يضبط JS القيمة الصحيحة. */
     #activationScreen {
-        display: grid !important;
+        display: grid;
         grid-template-columns: 1.05fr 0.95fr;
         grid-template-rows: auto 1fr auto;
         grid-template-areas:
@@ -4483,7 +4486,12 @@ function hideActivationScreen() {
 }
 
 function showAuthScreen() {
-    document.getElementById("activationScreen").style.display = "flex";
+    // على شاشات الحاسوب (≥1024px) تصميم الشبكة الجديد يحتاج display:grid وليس flex؛
+    // بدون هذا كانت قاعدة CSS تضطر لاستخدام !important لفرض grid، وهو ما كان يبطل
+    // أيضاً display:none التي تضبطها hideActivationScreen() بعد نجاح تسجيل الدخول على
+    // الحاسوب تحديداً - فتبقى شاشة الدخول ظاهرة فوق التطبيق رغم نجاح الدخول فعلياً
+    // (تعمل بشكل صحيح على الجوال لأن flex هناك لا تحتاج !important).
+    document.getElementById("activationScreen").style.display = window.innerWidth >= 1024 ? "grid" : "flex";
     document.body.style.overflow = "hidden";
 }
 
