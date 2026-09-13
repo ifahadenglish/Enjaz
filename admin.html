@@ -204,6 +204,7 @@ select.type-select{
                         <tr>
                             <th>المستخدم</th>
                             <th>البريد</th>
+                            <th>الاسم في التقرير</th>
                             <th>نوع الحساب</th>
                             <th>الحالة</th>
                             <th>الانتهاء</th>
@@ -212,7 +213,7 @@ select.type-select{
                         </tr>
                     </thead>
                     <tbody id="accountsBody">
-                        <tr class="loading-row"><td colspan="7"><i class="fas fa-circle-notch spin"></i> جارِ التحميل...</td></tr>
+                        <tr class="loading-row"><td colspan="8"><i class="fas fa-circle-notch spin"></i> جارِ التحميل...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -375,7 +376,7 @@ async function loadAccounts(){
         accountsCache = await rpc('admin_list_accounts', {}) || [];
         renderAccounts();
     }catch(e){
-        body.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fas fa-triangle-exclamation"></i>${e.message}</td></tr>`;
+        body.innerHTML = `<tr><td colspan="8" class="empty-state"><i class="fas fa-triangle-exclamation"></i>${e.message}</td></tr>`;
         showToast(e.message, 'err');
     }
 }
@@ -387,11 +388,12 @@ function renderAccounts(){
     if(q){
         list = list.filter(a =>
             (a.username||'').toLowerCase().includes(q) ||
-            (a.email||'').toLowerCase().includes(q)
+            (a.email||'').toLowerCase().includes(q) ||
+            (a.reporter_name||'').toLowerCase().includes(q)
         );
     }
     if(!list.length){
-        body.innerHTML = `<tr><td colspan="7" class="empty-state"><i class="fas fa-user-slash"></i>لا توجد حسابات مطابقة</td></tr>`;
+        body.innerHTML = `<tr><td colspan="8" class="empty-state"><i class="fas fa-user-slash"></i>لا توجد حسابات مطابقة</td></tr>`;
         return;
     }
     body.innerHTML = list.map(a => {
@@ -412,6 +414,7 @@ function renderAccounts(){
         <tr data-uid="${a.user_id}">
             <td>${a.username || '<span class="muted">-</span>'}</td>
             <td>${a.email || '<span class="muted">-</span>'}</td>
+            <td>${a.reporter_name || '<span class="muted">-</span>'}</td>
             <td>
                 <select class="type-select" id="type-${a.user_id}">${typeOptions}</select>
             </td>
