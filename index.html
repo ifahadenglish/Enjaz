@@ -6134,15 +6134,9 @@ async function downloadPDF() {
     element.style.display = 'block';
     element.style.visibility = 'visible';
     element.style.opacity = '1';
-    // position:fixed (بدل relative) يخرج التقرير تمامًا من التخطيط الطبيعي للصفحة ويثبّته عند
-    // (0,0) بالضبط بمعزل عن أي تمركز عبر margin:auto يعتمد على عرض الحاوية المحيطة (والذي
-    // يتغيّر فعليًا مع تكبير المتصفح). هذا يجعل موضع العنصر الذي يعتمد عليه html2canvas لالتقاط
-    // التقرير (المُكتشَف تلقائيًا دون أي تعديل على معاملات html2canvas نفسها) ثابتًا ومحددًا
-    // تمامًا بصرف النظر عن مستوى التكبير أو عرض الشاشة، بدل قيمة تقريبية/كسرية متغيرة.
-    element.style.position = 'fixed';
+    element.style.position = 'relative';
     element.style.top = '0';
     element.style.left = '0';
-    element.style.margin = '0';
 
     const cleanFileName = document.getElementById('manualReportTitle').value.replace(/[\/\\:*?"<>|]/g, '_') || 'تقرير';
 
@@ -6190,15 +6184,9 @@ async function sharePDFWhatsApp() {
     element.style.display = 'block';
     element.style.visibility = 'visible';
     element.style.opacity = '1';
-    // position:fixed (بدل relative) يخرج التقرير تمامًا من التخطيط الطبيعي للصفحة ويثبّته عند
-    // (0,0) بالضبط بمعزل عن أي تمركز عبر margin:auto يعتمد على عرض الحاوية المحيطة (والذي
-    // يتغيّر فعليًا مع تكبير المتصفح). هذا يجعل موضع العنصر الذي يعتمد عليه html2canvas لالتقاط
-    // التقرير (المُكتشَف تلقائيًا دون أي تعديل على معاملات html2canvas نفسها) ثابتًا ومحددًا
-    // تمامًا بصرف النظر عن مستوى التكبير أو عرض الشاشة، بدل قيمة تقريبية/كسرية متغيرة.
-    element.style.position = 'fixed';
+    element.style.position = 'relative';
     element.style.top = '0';
     element.style.left = '0';
-    element.style.margin = '0';
 
     const reportName = document.getElementById('manualReportTitle').value || 'تقرير';
 
