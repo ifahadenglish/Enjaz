@@ -710,8 +710,31 @@ html, body {
         max-width: 400px;
         box-shadow: none;
         border-top: none;
-        padding: 32px 40px;
+        padding: 22px 36px;
     }
+
+    /* تصغير الشعار والحقول والأزرار داخل بطاقة الدخول على الحاسوب تحديداً، بحيث
+       يتسع محتوى البطاقة بالكامل ضمن ارتفاع الصف بدون أي حاجة لشريط تمرير في
+       الغالبية العظمى من دقات شاشات الحاسوب (بدل الاعتماد على التمرير كما كان
+       سابقاً) - overflow-y:auto أعلاه يبقى كشبكة أمان فقط لأضيق الشاشات ولا
+       يظهر شريط تمرير إطلاقاً طالما المحتوى بات يتسع فعلاً بدون تمرير. */
+    #activationScreen .auth-logo { max-width: 78px; margin-bottom: 8px; }
+    #activationScreen h3 { font-size: 19px; margin-bottom: 3px; }
+    #activationScreen .auth-subtitle { font-size: 13px; margin-bottom: 14px; }
+
+    #activationScreen .auth-input-wrapper { margin-bottom: 10px; }
+    #activationScreen .auth-input { padding: 10px 15px; font-size: 14.5px; }
+    #activationScreen .auth-forgot-link { margin: -2px 0 10px 2px; }
+
+    #activationScreen button {
+        padding: 10px;
+        font-size: 14.5px;
+    }
+    #activationScreen #contactForTrialBtn { padding: 10px; font-size: 13.5px; }
+    #activationScreen #googleSignInBtn,
+    #activationScreen #authSwitchBtn { margin-bottom: 8px; }
+
+    .auth-divider { margin: 10px 0 8px; }
 
     #activationScreen .auth-footer-tagline {
         display: none;
