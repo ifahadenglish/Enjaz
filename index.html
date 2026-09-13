@@ -6097,36 +6097,10 @@ function getActiveReportTemplate() {
 // - إن كانت ضمن صفحة واحدة طبيعياً: توضع بارتفاعها الطبيعي دون أي تمديد أو تصغير.
 // - إن كانت أطول (تجاوز فعلي): تُفرد على كامل الصفحة (210×297مم بالضبط) - فرق غير محسوس
 //   عملياً لأن التجاوز عادة طفيف جداً، بدل تقسيمها فعلياً على صفحتين أو ترك هوامش بيضاء حولها.
-// يحسب لـ html2canvas موضع/أبعاد العنصر كأعداد صحيحة ثابتة (مقربة لأقرب بكسل) بدل تركها
-// تُكتشف ضمنياً وقت الالتقاط اعتماداً على أبعاد نافذة المتصفح الحية (window.innerWidth/
-// clientWidth) التي تتغير فعلياً مع تكبير المتصفح (Browser Zoom). فعند التكبير بنسب غير
-// كاملة (110%، 125%، 150%...) قد يُنتج المتصفح قيماً كسرية من getBoundingClientRect، وأي
-// تفاوت بسيط بينها وبين موضع الرسم الفعلي يظهر بعد التكبير 3x (scale) كإزاحة واضحة لليمين
-// أو اليسار داخل الصورة الملتقطة. تثبيت الموضع/الأبعاد هنا كأعداد صحيحة، مع نافذة عرض
-// (windowWidth/windowHeight) ثابتة لا تعتمد على حجم/تكبير نافذة المتصفح الحالية، يجعل
-// النتيجة مطابقة تماماً بصرف النظر عن مستوى التكبير — لأن قالب التقرير نفسه بعرض ثابت
-// بالمليمتر (max-width: 210mm) مستقل أصلاً عن أي تكبير أو حجم شاشة.
-function getZoomIndependentCaptureRect(element) {
-    const rect = element.getBoundingClientRect();
-    const x = Math.round(rect.left + window.scrollX);
-    const y = Math.round(rect.top + window.scrollY);
-    const width = Math.round(rect.width);
-    const height = Math.round(rect.height);
-    return {
-        x, y, width, height,
-        windowWidth: Math.max(x + width, 1400),
-        windowHeight: y + height + 50,
-    };
-}
-
 async function captureReportAsSinglePageA4Pdf(element) {
     try {
-        const capRect = getZoomIndependentCaptureRect(element);
         const canvas = await html2canvas(element, {
-            scale: 3, useCORS: true, backgroundColor: '#ffffff',
-            scrollX: 0, scrollY: 0,
-            x: capRect.x, y: capRect.y, width: capRect.width, height: capRect.height,
-            windowWidth: capRect.windowWidth, windowHeight: capRect.windowHeight,
+            scale: 3, useCORS: true, scrollY: 0, backgroundColor: '#ffffff',
             onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; }
         });
         const JsPDFCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : null;
@@ -6187,16 +6161,9 @@ async function downloadPDF() {
         return;
     }
 
-    const fallbackCapRect1 = getZoomIndependentCaptureRect(element);
     html2pdf().set({
         filename: cleanFileName + ".pdf",
-        html2canvas: {
-            scale: 3, useCORS: true, backgroundColor: '#ffffff',
-            scrollX: 0, scrollY: 0,
-            x: fallbackCapRect1.x, y: fallbackCapRect1.y, width: fallbackCapRect1.width, height: fallbackCapRect1.height,
-            windowWidth: fallbackCapRect1.windowWidth, windowHeight: fallbackCapRect1.windowHeight,
-            onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; }
-        },
+        html2canvas: { scale: 3, useCORS: true, scrollY: 0, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     }).from(element).save().then(restoreUiAfterExport);
 }
@@ -6264,17 +6231,10 @@ async function sharePDFWhatsApp() {
         return;
     }
 
-    const fallbackCapRect2 = getZoomIndependentCaptureRect(element);
     await html2pdf().set({
         margin: 0,
         image: { type: "jpeg", quality: 1 },
-        html2canvas: {
-            scale: 3, useCORS: true, backgroundColor: '#ffffff',
-            scrollX: 0, scrollY: 0,
-            x: fallbackCapRect2.x, y: fallbackCapRect2.y, width: fallbackCapRect2.width, height: fallbackCapRect2.height,
-            windowWidth: fallbackCapRect2.windowWidth, windowHeight: fallbackCapRect2.windowHeight,
-            onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; }
-        },
+        html2canvas: { scale: 3, scrollY: 0, useCORS: true, backgroundColor: '#ffffff', onclone: function(clonedDoc) { const cloned = clonedDoc.getElementById(element.id); if (cloned) cloned.style.background = '#ffffff'; } },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     }).from(element).toPdf().output('blob').then(handlePdfBlob);
 }
