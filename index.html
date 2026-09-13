@@ -636,7 +636,7 @@ html, body {
         grid-template-rows: auto 1fr auto;
         grid-template-areas:
             "topbar topbar"
-            "illustration card"
+            "card illustration"
             "footerlinks footerlinks";
         align-items: stretch;
         justify-content: stretch;
@@ -685,21 +685,29 @@ html, body {
     .auth-illustration-panel {
         grid-area: illustration;
         display: block;
+        min-height: 0;
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
         background-color: var(--primary-dark);
     }
 
-    /* بطاقة تسجيل الدخول: تصبح جزءاً من الشبكة بدل التمركز الحر */
+    /* بطاقة تسجيل الدخول: تصبح جزءاً من الشبكة بدل التمركز الحر.
+       min-height:0 ضروري كي لا يفرض محتوى البطاقة ارتفاعاً أكبر من صف الشبكة على
+       الشاشات القصيرة (كشاشات اللابتوب بدقة 1366x768)؛ وبهذا يصبح التمرير داخلياً
+       ضمن البطاقة نفسها بدل أن يدفع شريط الروابط السفلي خارج حدود الشاشة فيتعذر
+       الوصول إليه (وهو سبب ظهور بعض الأزرار "لا تعمل" فعلياً لعدم القدرة على رؤيتها). */
     #activationScreen .activation-box {
         grid-area: card;
         margin: auto;
+        min-height: 0;
+        max-height: 100%;
+        overflow-y: auto;
         width: 100%;
         max-width: 400px;
         box-shadow: none;
         border-top: none;
-        padding: 40px;
+        padding: 32px 40px;
     }
 
     #activationScreen .auth-footer-tagline {
