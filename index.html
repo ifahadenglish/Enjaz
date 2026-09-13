@@ -3125,16 +3125,55 @@ button[title]:hover::before {
 
     /* ---- تحويل رأس الصفحة والأشرطة الثابتة إلى عناصر عادية ضمن التخطيط بدل التثبيت ---- */
     .app-header { position: static; }
+    /* .wrapper (max-width:900px في التصميم الأصلي) كانت تُحجّم كل محتوى العمود
+       الرئيسي (الصورة الترويجية، الأزرار، بطاقة الأقسام) بغض النظر عن رفع عرض
+       dashboard-grid أدناه - إزالة الحد هنا هي ما يسمح فعلياً باستخدام العرض
+       الأوسع الجديد بدل أن يبقى محصوراً في 900px بصمت. */
+    .wrapper { max-width: none; padding: 0; }
     .main-buttons-bar { position: static; width: auto; margin-bottom: 18px; }
     .brand-promo-card { margin: 0 0 18px; max-width: none; }
     .input-section { margin-top: 0; }
 
-    /* ---- شبكة لوحة التحكم: عمود جانبي معلوماتي + عمود رئيسي ---- */
+    /* ---- تكبير بطاقة الأقسام الأربعة (مؤشر التقدم + رؤوس الأقسام القابلة للطي) على
+       الحاسوب فقط، لتتناسق بصرياً مع حجم صورة الترويج (brand-promo-card) الكبيرة أعلاها ---- */
+    .input-section { padding: 40px 46px; }
+
+    .main-progress-bar {
+        padding: 18px 24px;
+        gap: 18px;
+        border-radius: 16px;
+        margin-bottom: 22px;
+    }
+    .main-progress-bar .main-progress-label { font-size: 18px; }
+    .main-progress-bar .main-progress-track { height: 14px; }
+
+    .main-accordion-section { margin-bottom: 20px; border-radius: 18px; }
+
+    .main-accordion-header { padding: 24px 26px; gap: 20px; }
+
+    .main-accordion-number { width: 48px; height: 48px; font-size: 20px; }
+
+    .main-accordion-titlewrap { gap: 6px; }
+    .main-accordion-title { font-size: 22px; gap: 12px; }
+    .main-accordion-desc { font-size: 16px; }
+
+    .main-accordion-status { font-size: 14px; padding: 7px 14px; gap: 8px; }
+    .main-accordion-status i { font-size: 11px; }
+
+    .main-accordion-chevron { font-size: 20px; }
+
+    .main-accordion-body { padding: 0 26px; }
+    .main-accordion-body.open { padding: 8px 26px 26px 26px; }
+
+    /* ---- شبكة لوحة التحكم: عمود جانبي معلوماتي + عمود رئيسي.
+       max-width مرفوع من 1400px إلى 1680px بناءً على طلب توسيع بطاقة الأقسام
+       الأربعة أكثر على شاشات الحاسوب الكبيرة (لا يمس هذا قالب تصدير PDF إطلاقاً،
+       فهو عنصر مختلف تماماً بمعرّف #report-content) ---- */
     .dashboard-grid {
         display: grid;
         grid-template-columns: 300px 1fr;
         gap: 22px;
-        max-width: 1400px;
+        max-width: 1680px;
         margin: 0 auto;
         padding: 20px 24px 40px;
         align-items: start;
