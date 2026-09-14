@@ -871,16 +871,16 @@ html, body {
     gap: 12px;
     padding-right: 8px;
     position: relative;
-    color: #083024;
+    color: var(--text-dark);
 }
 
 .form-group label i {
-    color: #066d4d;
+    color: var(--primary);
     font-size: 16px;
-    background: #f0f9f6;
+    background: var(--gray-light);
     padding: 7px;
     border-radius: 10px;
-    border: 1px solid #d4ebe2;
+    border: 1px solid var(--border);
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
@@ -899,20 +899,20 @@ input, select, textarea {
     width: 100%;
     padding: 16px;
     margin-top: 8px;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
     border-radius: 12px;
     font-size: 18px;
     background: #f9fcfb;
     transition: all 0.3s;
     font-family: 'Cairo', sans-serif;
-    color: #083024;
+    color: var(--text-dark);
     box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
     -webkit-appearance: none;
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #066d4d;
+    border-color: var(--primary);
     box-shadow: 0 0 0 4px rgba(6,109,77,0.15), inset 0 2px 8px rgba(0,0,0,0.05);
     background: #ffffff;
 }
@@ -1067,11 +1067,11 @@ button[title]:hover::before {
 
 /* أنماط القوائم */
 .levels-container {
-    background: #f8fdfa;
+    background: var(--gray-light);
     border-radius: 12px;
     padding: 15px;
     margin-bottom: 20px;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -1081,7 +1081,7 @@ button[title]:hover::before {
     justify-content: space-between;
     margin-bottom: 15px;
     padding: 8px;
-    background: linear-gradient(135deg, #066d4d 0%, #044a35 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     border-radius: 8px;
     color: white;
     font-weight: 700;
@@ -1102,7 +1102,7 @@ button[title]:hover::before {
 .level-select select {
     width: 100%;
     padding: 12px;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-family: 'Cairo', sans-serif;
     font-size: 14px;
@@ -1111,13 +1111,13 @@ button[title]:hover::before {
 }
 
 .level-select select:focus {
-    border-color: #066d4d;
+    border-color: var(--primary);
     outline: none;
 }
 
 .level-select label {
     font-size: 12px;
-    color: #044a35;
+    color: var(--primary-dark);
     font-weight: 600;
     margin-bottom: 5px;
     display: flex;
@@ -1126,7 +1126,7 @@ button[title]:hover::before {
 }
 
 .level-select label i {
-    color: #066d4d;
+    color: var(--primary);
     font-size: 12px;
 }
 
@@ -1145,7 +1145,7 @@ button[title]:hover::before {
 
 .criterion-name {
     font-weight: 800;
-    color: #044a35;
+    color: var(--primary-dark);
     font-size: 14px;
 }
 
@@ -1186,8 +1186,8 @@ button[title]:hover::before {
 }
 
 #searchResults div:hover {
-    background-color: #f0f9f6 !important;
-    color: #066d4d;
+    background-color: var(--gray-light) !important;
+    color: var(--primary);
 }
 
 #searchResults div:last-child {
@@ -1196,7 +1196,7 @@ button[title]:hover::before {
 
 #reportSearch:focus {
     outline: none;
-    border-color: #066d4d;
+    border-color: var(--primary);
     box-shadow: 0 0 0 2px rgba(6, 109, 77, 0.2);
 }
 
@@ -1204,23 +1204,23 @@ button[title]:hover::before {
 .manual-title-container {
     margin-top: 15px;
     padding: 15px;
-    background: #f8fdfa;
+    background: var(--gray-light);
     border-radius: 12px;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
 }
 
 .manual-title-container label {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #044a35;
+    color: var(--primary-dark);
     font-weight: 700;
     margin-bottom: 10px;
 }
 
 .manual-title-container input {
     background: white;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
     padding: 12px;
     border-radius: 8px;
     font-size: 16px;
@@ -1228,10 +1228,10 @@ button[title]:hover::before {
 
 /* قسم الأدوات - تصميم متجاوب باستخدام Grid */
 .tools-section {
-    background: #f8fdfa;
+    background: var(--gray-light);
     padding: 18px;
     border-radius: 12px;
-    border: 1px solid #d4ebe2;
+    border: 1px solid var(--border);
     margin-top: 10px;
     box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     counter-reset: tool-counter;
@@ -1246,19 +1246,19 @@ button[title]:hover::before {
     justify-content: space-between;
     align-items: center;
     padding: 12px 14px;
-    background: #f8fdfa;
-    border: 1px solid #d4ebe2;
+    background: var(--gray-light);
+    border: 1px solid var(--border);
     border-radius: 12px;
     font-weight: 700;
     font-size: 15px;
-    color: #066d4d;
+    color: var(--primary);
     user-select: none;
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
 }
 
 .accordion-icon {
     transition: transform 0.25s ease;
-    color: #066d4d;
+    color: var(--primary);
 }
 
 .accordion-icon.rotated {
@@ -1513,7 +1513,7 @@ button[title]:hover::before {
     padding: 12px 8px 12px 8px;
     background: white;
     border-radius: 12px;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
     transition: all 0.3s;
     cursor: pointer;
     position: relative;
@@ -1526,7 +1526,7 @@ button[title]:hover::before {
     content: counter(tool-counter);
     position: absolute;
     right: 8px;
-    background: #066d4d;
+    background: var(--primary);
     color: white;
     width: 22px;
     height: 22px;
@@ -1539,8 +1539,8 @@ button[title]:hover::before {
 }
 
 .tool-checkbox:hover {
-    border-color: #066d4d;
-    background: #f0f9f6;
+    border-color: var(--primary);
+    background: var(--gray-light);
     box-shadow: 0 6px 12px rgba(6, 109, 77, 0.1);
     transform: translateY(-2px);
 }
@@ -1557,20 +1557,20 @@ button[title]:hover::before {
 .tool-checkbox span {
     font-size: 14px;
     font-weight: 700;
-    color: #083024;
+    color: var(--text-dark);
     margin-right: 35px; /* مساحة للرقم */
     flex: 1;
     line-height: 1.4;
 }
 
 .tool-checkbox.checked {
-    border-color: #066d4d;
-    background: #e8f4f0;
+    border-color: var(--primary);
+    background: var(--gray);
     box-shadow: 0 4px 12px rgba(6, 109, 77, 0.15);
 }
 
 .checkmark {
-    color: #066d4d;
+    color: var(--primary);
     font-size: 18px;
     margin-right: 5px;
     display: none;
@@ -1605,12 +1605,12 @@ button[title]:hover::before {
     flex: 1;
     padding: 10px;
     border-radius: 8px;
-    border: 2px solid #d4ebe2;
+    border: 2px solid var(--border);
     font-size: 14px;
 }
 
 .other-tool-container button {
-    background: #066d4d;
+    background: var(--primary);
     color: white;
     border: none;
     border-radius: 8px;
@@ -1621,7 +1621,7 @@ button[title]:hover::before {
 }
 
 .other-tool-container button:hover {
-    background: #044a35;
+    background: var(--primary-dark);
 }
 
 .other-tools-list {
@@ -1632,7 +1632,7 @@ button[title]:hover::before {
 }
 
 .other-tag {
-    background: #e0f0ea;
+    background: var(--gray);
     border: 1px solid #b0d5c9;
     border-radius: 20px;
     padding: 5px 12px;
@@ -2060,6 +2060,17 @@ button[title]:hover::before {
 }
 
 .theme-light-blue .input-section {
+    /* إعادة تعريف متغيرات الألوان الأساسية هنا (لا في :root) يقصر أثرها على محتوى
+       "صفحة الإدخال" فقط (شريط التقدم، تنبيه الذكاء الاصطناعي، وكل بطاقات الأقسام
+       القابلة للطي بداخلها) دون أن يمسّ رأس التطبيق أو الشريط السفلي أو الصفحات
+       الأخرى التي تستخدم نفس أسماء المتغيرات لأغراض مختلفة. */
+    --primary: #1a73e8;
+    --primary-dark: #174ea6;
+    --primary-light: #4285f4;
+    --border: #c2d4ff;
+    --gray-light: #eef4ff;
+    --gray: #dce8ff;
+    --shadow: 0 10px 30px rgba(26, 115, 232, 0.15);
     background: #ffffff;
     border: 2px solid #c2d4ff;
     box-shadow: 0 10px 30px rgba(66, 133, 244, 0.15);
@@ -2087,9 +2098,23 @@ button[title]:hover::before {
 }
 
 .theme-dark .input-section {
+    --primary: #60a5fa;
+    --primary-dark: #3b82f6;
+    --primary-light: #93c5fd;
+    --border: #334155;
+    --gray-light: #243044;
+    --gray: #334155;
+    --white: #24344a;
+    --text-dark: #e2e8f0;
+    --text-light: #94a3b8;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     background: #1e293b;
     border: 2px solid #334155;
     color: #e0e0e0;
+}
+
+.theme-dark .input-section::before {
+    background: linear-gradient(to left, #60a5fa, #3b82f6, #93c5fd);
 }
 
 .theme-dark .input-section h2 {
@@ -2117,9 +2142,20 @@ button[title]:hover::before {
 }
 
 .theme-green .input-section {
+    --primary: #27ae60;
+    --primary-dark: #1e8449;
+    --primary-light: #2ecc71;
+    --border: #bfe8d1;
+    --gray-light: #f0faf4;
+    --gray: #d7f2e3;
+    --shadow: 0 10px 30px rgba(39, 174, 96, 0.15);
     background: #ffffff;
     border: 2px solid #2ecc71;
     box-shadow: 0 10px 30px rgba(46, 204, 113, 0.15);
+}
+
+.theme-green .input-section::before {
+    background: linear-gradient(to left, #1e8449, #27ae60, #2ecc71);
 }
 
 .theme-green .input-section h2 {
