@@ -2215,10 +2215,12 @@ button[title]:hover::before {
 
 /* أصبحت 3 أعمدة بعد فصل مربع "المادة" عن مربع "الدرس" إلى مربعين مستقلين (كانا
    يشتركان سابقاً في مربع واحد subject-lesson-box) - قالب خارج الصف له قاعدة خاصة
-   بعمود واحد أدناه فلا يتأثر بهذا التغيير. */
+   بعمود واحد أدناه فلا يتأثر بهذا التغيير. عمود "اسم التقرير" أُعطي ضعف مساحة
+   عمودي المادة/الدرس (2fr مقابل 1fr) لأن عناوين التقارير غالباً أطول بكثير من
+   اسم مادة أو درس واحد، وهذا ما كان يسبب تراكب الحروف عند تساوي الأعمدة الثلاثة. */
 .info-grid2 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 2fr 1fr 1fr;
     gap: 6px;
     margin-bottom: 6px;
 }
@@ -2257,9 +2259,18 @@ button[title]:hover::before {
 }
 
 /* عنوان/اسم التقرير أهم بصرياً من بقية صناديق المعلومات الصغيرة (الصف، العدد...)
-   لذا يكبَّر قليلاً عن باقي .info-value دون المساس بأي صندوق آخر. */
+   لذا يكبَّر قليلاً عن باقي .info-value دون المساس بأي صندوق آخر. كما أن عناوين
+   التقارير قد تكون طويلة نسبياً، والالتزام بسطر واحد بلا التفاف (كما في بقية
+   الصناديق الصغيرة) كان يسبب تراكب الحروف بصرياً عند الطباعة/التصدير بدل ظهور
+   "..." بشكل نظيف - لذا نسمح هنا تحديداً بالالتفاف على سطرين كحد أقصى. */
 .info-value-report-title {
     font-size: 14px;
+    white-space: normal;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .subject-lesson-box {
@@ -6570,6 +6581,7 @@ async function captureReportAsSinglePageA4Pdf(element) {
 }
 
 async function downloadPDF() {
+    if (blockExportIfBasicDataIncomplete()) return;
     await loadDates();
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'hidden';
@@ -6626,6 +6638,7 @@ async function downloadPDF() {
 }
 
 async function sharePDFWhatsApp() {
+    if (blockExportIfBasicDataIncomplete()) return;
     await loadDates();
     document.querySelector('.main-buttons-bar').style.visibility = 'hidden';
     document.querySelector('.top-marquee').style.visibility = 'visible';
@@ -6872,6 +6885,21 @@ function renderAccountSummary() {
     updateBasicDataAlert();
 }
 
+// قائمة حقول بيانات التقرير الأساسية المشتركة بين تنبيه الواجهة الرئيسية ومنع
+// تصدير التقرير أدناه، حتى لا يتكرر تعريفها في أكثر من مكان.
+const BASIC_DATA_FIELDS = [
+    { id: 'reporterName', label: 'اسم مقدم التقرير' },
+    { id: 'education', label: 'إدارة التعليم' },
+    { id: 'school', label: 'اسم المدرسة' },
+    { id: 'principal', label: 'اسم المدير' }
+];
+
+function getMissingBasicDataLabels() {
+    return BASIC_DATA_FIELDS
+        .filter(f => !(document.getElementById(f.id)?.value || '').trim())
+        .map(f => f.label);
+}
+
 // تنبيه إكمال بيانات التقرير الأساسية في الواجهة الرئيسية - يظهر عند نقص أي من
 // الحقول الأربعة (اسم مقدم التقرير، إدارة التعليم، المدرسة، اسم المدير) ويختفي
 // تلقائياً فور اكتمالها جميعاً. يُستدعى من renderAccountSummary() التي تُستدعى
@@ -6880,15 +6908,7 @@ function renderAccountSummary() {
 function updateBasicDataAlert() {
     const alertBox = document.getElementById('basicDataAlert');
     if (!alertBox) return;
-    const fields = [
-        { id: 'reporterName', label: 'اسم مقدم التقرير' },
-        { id: 'education', label: 'إدارة التعليم' },
-        { id: 'school', label: 'اسم المدرسة' },
-        { id: 'principal', label: 'اسم المدير' }
-    ];
-    const missing = fields
-        .filter(f => !(document.getElementById(f.id)?.value || '').trim())
-        .map(f => f.label);
+    const missing = getMissingBasicDataLabels();
     if (missing.length === 0) {
         alertBox.classList.remove('show');
         return;
@@ -6896,6 +6916,19 @@ function updateBasicDataAlert() {
     const missingText = document.getElementById('basicDataAlertMissing');
     if (missingText) missingText.textContent = 'الحقول الناقصة: ' + missing.join('، ');
     alertBox.classList.add('show');
+}
+
+// تمنع تصدير/مشاركة التقرير (PDF أو واتساب) قبل اكتمال بيانات التقرير الأساسية -
+// تُستدعى من بداية downloadPDF() وsharePDFWhatsApp() قبل أي تعديل على واجهة
+// الصفحة. تعرض تنبيهاً وتنقل المستخدم مباشرة لصفحة "حسابي" لإكمال الناقص بدل
+// إصدار تقرير رسمي بحقول أساسية فارغة.
+function blockExportIfBasicDataIncomplete() {
+    const missing = getMissingBasicDataLabels();
+    if (missing.length === 0) return false;
+    updateBasicDataAlert();
+    showNotification('أكمل بيانات التقرير الأساسية أولاً: ' + missing.join('، '), 'warning');
+    showPage('account');
+    return true;
 }
 
 // يقرأ حالة الحساب مباشرة من جدول entitlements عبر Supabase (RLS تسمح للمستخدم
