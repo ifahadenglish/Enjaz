@@ -5652,6 +5652,7 @@ function fallbackProfessionalAIParsing(response, role) {
 // مسافة زائدة قبل علامة ترقيم.
 function cleanStrayPunctuation(text) {
     return text
+        .replace(/\s{2,}/g, ' ')
         .replace(/\s+([,،.؛;:])/g, '$1')
         .replace(/([,،.؛;:])\1+/g, '$1')
         .replace(/^[\s,،.؛;:\-]+/, '')
@@ -5663,8 +5664,16 @@ function removeFieldTitles(content) {
     const titles = ['الهدف التربوي','نبذة مختصرة','إجراءات التنفيذ','الاستراتيجيات','نقاط القوة','نقاط التحسين','التوصيات','هو:','تشمل:','يتضمن:','يتمثل في','يشمل','تحتوي','تتضمن'];
     let cleaned = content;
     titles.forEach(t => {
-        cleaned = cleaned.replace(new RegExp(`^${t}[:\\.\\-]?\\s*`,'i'), '');
-        cleaned = cleaned.replace(new RegExp(`\\s*${t}[:\\.\\-]?\\s*`,'gi'), ' ');
+        // إزالة العنوان إن ظهر في بداية النص تماماً (سواء تبعته نقطتان أو نقطة أو شرطة
+        // أو فاصلة عربية/إنجليزية) - هذه الحالة مضمونة أنها عنوان حقل مكرر وليست جزءاً
+        // طبيعياً من الجملة.
+        cleaned = cleaned.replace(new RegExp(`^${t}[:\\.\\-,،؛]*\\s*`, 'i'), '');
+        // أما إزالته في أي موضع آخر من النص فتقتصر فقط على حالة تبعه فيها نقطتان ":"
+        // بشكل صريح، لأن هذا مؤشر قوي على تسرّب عنوان حقل آخر داخل النص. كلمات مثل
+        // "الاستراتيجيات" أو "التوصيات" أو "يشمل" أو "تحتوي" شائعة الاستخدام كجزء طبيعي
+        // من الجملة نفسها، فحذفها من منتصف النص (كما كان يحدث سابقاً) كان يقطّع الجملة
+        // ويترك فاصلة أو نقطة "معلّقة" بلا معنى في مكان القطع.
+        cleaned = cleaned.replace(new RegExp(`\\s*${t}\\s*:\\s*`, 'gi'), ' ');
     });
     const result = cleanStrayPunctuation(cleaned.trim().replace(/\s+/g, ' '));
     return result || content;
