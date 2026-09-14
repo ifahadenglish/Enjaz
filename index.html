@@ -5645,6 +5645,20 @@ function fallbackProfessionalAIParsing(response, role) {
     });
 }
 
+// إزالة أي علامة ترقيم "معلّقة" بلا معنى: فاصلة في بداية النص (تبقى أحياناً بعد
+// حذف عنوان الحقل من بداية رد الذكاء الاصطناعي مباشرة قبل الفاصلة التي كانت
+// تتبعه أصلاً)، أو فاصلة معلّقة في نهاية النص (تظهر أحياناً عند اقتطاع النص عند
+// حد الكلمات المطلوب فتُقطع الجملة مباشرة بعد فاصلة داخلية)، وكذلك أي تكرار أو
+// مسافة زائدة قبل علامة ترقيم.
+function cleanStrayPunctuation(text) {
+    return text
+        .replace(/\s+([,،.؛;:])/g, '$1')
+        .replace(/([,،.؛;:])\1+/g, '$1')
+        .replace(/^[\s,،.؛;:\-]+/, '')
+        .replace(/[\s,،]+$/, '')
+        .trim();
+}
+
 function removeFieldTitles(content) {
     const titles = ['الهدف التربوي','نبذة مختصرة','إجراءات التنفيذ','الاستراتيجيات','نقاط القوة','نقاط التحسين','التوصيات','هو:','تشمل:','يتضمن:','يتمثل في','يشمل','تحتوي','تتضمن'];
     let cleaned = content;
@@ -5652,7 +5666,8 @@ function removeFieldTitles(content) {
         cleaned = cleaned.replace(new RegExp(`^${t}[:\\.\\-]?\\s*`,'i'), '');
         cleaned = cleaned.replace(new RegExp(`\\s*${t}[:\\.\\-]?\\s*`,'gi'), ' ');
     });
-    return cleaned.trim().replace(/\s+/g, ' ') || content;
+    const result = cleanStrayPunctuation(cleaned.trim().replace(/\s+/g, ' '));
+    return result || content;
 }
 
 // عبارة "مراعاة الفروق الفردية" مفهوم تربوي خاص بالتعامل مع فروقات الطلاب أنفسهم، فلا معنى
@@ -5703,7 +5718,7 @@ function nextPaddingPhrase(excludeIndividualDifferences) {
 
 function ensureWordCount(content, target) {
     const words = content.split(' ');
-    if (words.length >= target-5 && words.length <= target+5) return content;
+    if (words.length >= target-5 && words.length <= target+5) return cleanStrayPunctuation(content);
     if (words.length < target-5) {
         const excludeIndividualDifferences = !isTargetAudienceStudents();
         let extended = content;
@@ -5718,9 +5733,12 @@ function ensureWordCount(content, target) {
             lastUsed = phrase;
             extended += ' ' + phrase;
         }
-        return extended;
+        return cleanStrayPunctuation(extended);
     }
-    return words.slice(0,target).join(' ');
+    // مهم: قد يقع الاقتطاع مباشرة بعد كلمة تنتهي بفاصلة (الفاصلة العربية تُكتب
+    // غالباً ملتصقة بالكلمة دون مسافة قبلها)، مما يترك فاصلة "معلّقة" بلا معنى
+    // في نهاية النص المقتطع. ننظفها هنا بنفس الدالة المستخدمة في removeFieldTitles.
+    return cleanStrayPunctuation(words.slice(0,target).join(' '));
 }
 
 // ==================== حفظ واستعراض التقارير ====================
