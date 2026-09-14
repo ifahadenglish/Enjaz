@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 /* ========== جميع الأنماط كما هي دون تغيير (ما عدا أنماط PDF تم تحسينها) ========== */
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap');
 
 :root {
     --primary: #066d4d;
@@ -2239,15 +2239,19 @@ button[title]:hover::before {
     text-align: center;
     color: var(--main);
     font-weight: 800;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: 'Amiri', 'Cairo', sans-serif;
     margin-bottom: 4px;
 }
 
 .box-objective .box-content {
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 12.5px;
+    line-height: 1.45;
     text-align: center;
     overflow: hidden;
+    font-family: 'Amiri', 'Cairo', sans-serif;
+    direction: rtl;
+    unicode-bidi: plaintext;
 }
 
 .box {
@@ -2266,15 +2270,19 @@ button[title]:hover::before {
     text-align: center;
     color: var(--main);
     font-weight: 800;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: 'Amiri', 'Cairo', sans-serif;
     margin-bottom: 4px;
 }
 
 .box-content {
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 12.5px;
+    line-height: 1.45;
     text-align: center;
     overflow: hidden;
+    font-family: 'Amiri', 'Cairo', sans-serif;
+    direction: rtl;
+    unicode-bidi: plaintext;
 }
 
 .row {
@@ -5561,6 +5569,7 @@ function getFieldMappingByRole(role) {
 }
 
 function parseAIResponseProfessional(response) {
+    resetPaddingPhrasePool(); // بداية جديدة لكل تقرير حتى لا تتكرر نفس عبارة الحشو بين حقوله
     const role = document.getElementById('role').value;
     const fieldMapping = getFieldMappingByRole(role);
     const lines = response.split('\n').filter(l => l.trim());
@@ -5616,16 +5625,61 @@ function isTargetAudienceStudents() {
     return /طالب|طلاب|طالبات|الطلبة/.test(targetValue);
 }
 
+// حوض عبارات الحشو المتبقية للتقرير الحالي - يُعاد ملؤه وخلطه عشوائياً كلما نفد
+// بدلاً من اختيار عشوائي مستقل في كل مرة (وهو ما كان يسمح بتكرار نفس العبارة
+// أكثر من مرة في نفس الحقل أو في أكثر من حقل بنفس التقرير بشكل غير احترافي).
+let __paddingPhrasePool = [];
+
+function resetPaddingPhrasePool() {
+    __paddingPhrasePool = [];
+}
+
+function shuffleArray(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function nextPaddingPhrase(excludeIndividualDifferences) {
+    let basePhrases = [
+        'مع التركيز على تحقيق أهداف التعلم وتنمية المهارات الأساسية',
+        'بما يسهم في رفع مستوى التحصيل الدراسي وتحسين المخرجات التعليمية',
+        'مع مراعاة الفروق الفردية وتنويع أساليب التدريس',
+        'لضمان تحقيق رؤية التعليم وتطوير العملية التعليمية',
+        'مع الاستفادة من أفضل الممارسات التربوية والتقنيات التعليمية الحديثة',
+        'بما يعزز جودة الأداء ويحقق نواتج تعليمية ملموسة',
+        'مع الحرص على التوثيق المستمر وقياس الأثر الفعلي لكل ممارسة',
+        'بما ينسجم مع متطلبات الميدان التربوي واحتياجات المرحلة الدراسية'
+    ];
+    if (excludeIndividualDifferences) {
+        basePhrases = basePhrases.filter(p => !p.includes('الفروق الفردية'));
+    }
+    if (__paddingPhrasePool.length === 0) {
+        __paddingPhrasePool = shuffleArray(basePhrases);
+    }
+    return __paddingPhrasePool.shift();
+}
+
 function ensureWordCount(content, target) {
     const words = content.split(' ');
     if (words.length >= target-5 && words.length <= target+5) return content;
     if (words.length < target-5) {
-        let phrases = ['مع التركيز على تحقيق أهداف التعلم وتنمية المهارات الأساسية','بما يسهم في رفع مستوى التحصيل الدراسي وتحسين المخرجات التعليمية','مع مراعاة الفروق الفردية وتنويع أساليب التدريس','لضمان تحقيق رؤية التعليم وتطوير العملية التعليمية','مع الاستفادة من أفضل الممارسات التربوية والتقنيات التعليمية الحديثة'];
-        if (!isTargetAudienceStudents()) {
-            phrases = phrases.filter(p => !p.includes('الفروق الفردية'));
-        }
+        const excludeIndividualDifferences = !isTargetAudienceStudents();
         let extended = content;
-        while (extended.split(' ').length < target) extended += ' ' + phrases[Math.floor(Math.random()*phrases.length)];
+        let lastUsed = null;
+        while (extended.split(' ').length < target) {
+            let phrase = nextPaddingPhrase(excludeIndividualDifferences);
+            // تفادي وضع نفس العبارة مرتين متتاليتين ضمن نفس الحقل إن أمكن
+            if (phrase === lastUsed && __paddingPhrasePool.length > 0) {
+                __paddingPhrasePool.push(phrase);
+                phrase = nextPaddingPhrase(excludeIndividualDifferences);
+            }
+            lastUsed = phrase;
+            extended += ' ' + phrase;
+        }
         return extended;
     }
     return words.slice(0,target).join(' ');
