@@ -2213,9 +2213,12 @@ button[title]:hover::before {
     margin-bottom: 6px;
 }
 
+/* أصبحت 3 أعمدة بعد فصل مربع "المادة" عن مربع "الدرس" إلى مربعين مستقلين (كانا
+   يشتركان سابقاً في مربع واحد subject-lesson-box) - قالب خارج الصف له قاعدة خاصة
+   بعمود واحد أدناه فلا يتأثر بهذا التغيير. */
 .info-grid2 {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
     margin-bottom: 6px;
 }
@@ -4021,14 +4024,8 @@ button[title]:hover::before {
 
 <div class="info-grid2">
   <div class="info-box"><div class="info-title">اسم التقرير</div><div class="info-value info-value-report-title" id="reportTypeBox"></div></div>
-  <div class="subject-lesson-box">
-    <div class="subject-lesson-title">المادة | الدرس</div>
-    <div class="subject-lesson">
-      <div id="subjectBox"></div>
-      <div class="subject-divider"></div>
-      <div id="lessonBox"></div>
-    </div>
-  </div>
+  <div class="info-box"><div class="info-title">المادة</div><div class="info-value" id="subjectBox"></div></div>
+  <div class="info-box"><div class="info-title">الدرس</div><div class="info-value" id="lessonBox"></div></div>
 </div>
 
 <div class="box-objective">
