@@ -884,6 +884,42 @@ html, body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
+/* صف يجمع تسمية الحقل مع مفتاح "إظهار في PDF" الصغير - يُستخدم فقط للحقول
+   القابلة للإخفاء من ملف الـPDF (الصف، المادة، المستهدفون، العدد) */
+.form-group-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.form-group .form-group-label-row label {
+    margin-bottom: 0;
+}
+.pdf-field-toggle {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-light);
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+    background: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 8px;
+}
+.pdf-field-toggle input[type="checkbox"] {
+    width: 13px;
+    height: 13px;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
 .form-group label::before {
     content: '';
     width: 8px;
@@ -3722,7 +3758,13 @@ button[title]:hover::before {
         <div id="teacherFields" style="display: none;">
           <div class="form-row">
             <div class="form-group">
-              <label for="grade"><i class="fas fa-users-class"></i> الصف</label>
+              <div class="form-group-label-row">
+                <label for="grade"><i class="fas fa-users-class"></i> الصف</label>
+                <label class="pdf-field-toggle" title="إظهار هذا الحقل في ملف PDF">
+                  <input type="checkbox" id="gradePdfToggle" checked onchange="onPdfFieldToggleChange()">
+                  <span>PDF</span>
+                </label>
+              </div>
               <select id="grade" oninput="updateReport()">
                 <option value="">اختر الصف</option>
                 <option value="الأول ابتدائي">الأول ابتدائي</option>
@@ -3746,7 +3788,13 @@ button[title]:hover::before {
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label for="subject"><i class="fas fa-book"></i> المادة / البرنامج</label>
+              <div class="form-group-label-row">
+                <label for="subject"><i class="fas fa-book"></i> المادة / البرنامج</label>
+                <label class="pdf-field-toggle" title="إظهار هذا الحقل في ملف PDF">
+                  <input type="checkbox" id="subjectPdfToggle" checked onchange="onPdfFieldToggleChange()">
+                  <span>PDF</span>
+                </label>
+              </div>
               <input id="subject" placeholder="مثال: لغتي" oninput="updateReport()">
             </div>
             <div class="form-group">
@@ -3763,11 +3811,23 @@ button[title]:hover::before {
       <!-- المستهدفون والعدد (حقول مشتركة) -->
       <div class="form-row">
         <div class="form-group">
-          <label for="target"><i class="fas fa-bullseye"></i> المستهدفون / الفئة</label>
+          <div class="form-group-label-row">
+            <label for="target"><i class="fas fa-bullseye"></i> المستهدفون / الفئة</label>
+            <label class="pdf-field-toggle" title="إظهار هذا الحقل في ملف PDF">
+              <input type="checkbox" id="targetPdfToggle" checked onchange="onPdfFieldToggleChange()">
+              <span>PDF</span>
+            </label>
+          </div>
           <input id="target" placeholder="مثال: جميع طلاب الصف" oninput="updateReport()">
         </div>
         <div class="form-group">
-          <label for="count"><i class="fas fa-user-check"></i> العدد / الحضور</label>
+          <div class="form-group-label-row">
+            <label for="count"><i class="fas fa-user-check"></i> العدد / الحضور</label>
+            <label class="pdf-field-toggle" title="إظهار هذا الحقل في ملف PDF">
+              <input type="checkbox" id="countPdfToggle" checked onchange="onPdfFieldToggleChange()">
+              <span>PDF</span>
+            </label>
+          </div>
           <input id="count" placeholder="مثال: ٢٥" oninput="updateReport()">
         </div>
       </div>
@@ -5599,15 +5659,11 @@ function updateOutsideToolsList() {
         toolElement.innerHTML = `<span>✓</span> ${tool}`;
         toolsListBox.appendChild(toolElement);
     });
-    if (selectedTools.length === 0) {
-        const noToolsMessage = document.createElement('div');
-        noToolsMessage.style.textAlign = 'center';
-        noToolsMessage.style.color = '#666';
-        noToolsMessage.style.fontSize = '9px';
-        noToolsMessage.style.padding = '4px';
-        noToolsMessage.textContent = 'لم يتم اختيار أي أدوات';
-        toolsListBox.appendChild(noToolsMessage);
-    }
+    // القسم اختياري بالكامل: إن لم يُحدَّد أي أداة لا يظهر قسم "الأدوات" إطلاقاً في
+    // ملف الـPDF (بدل رسالة "لم يتم اختيار أي أدوات" سابقاً) تفادياً لأي فراغ غير
+    // ضروري. عنصر block عادي فلا حاجة لإعادة حساب أي شبكة (grid).
+    const toolsBox = toolsListBox.closest('.tools-box');
+    if (toolsBox) toolsBox.style.display = selectedTools.length ? '' : 'none';
 }
 
 // ==================== تحديثات PDF ====================
@@ -5643,6 +5699,92 @@ function isolateLatinRuns(rawText) {
     }
     result += escapeHtml(str.slice(lastIndex));
     return result;
+}
+
+// ==================== إظهار/إخفاء حقول اختيارية في ملف الـPDF ====================
+// المعلم يتحكم عبر مفاتيح "PDF" الصغيرة بجانب حقول: الصف، المادة، المستهدفون، العدد
+// فيما إذا كانت هذه الحقول تظهر في ملف الـPDF الناتج أم لا. الحالة الافتراضية "ظاهر"
+// (لا تغيير عن السلوك السابق) وتُحفظ في localStorage لتبقى كما اختارها المعلم بين الجلسات.
+const PDF_FIELD_TOGGLE_KEYS = ['grade', 'subject', 'target', 'count'];
+
+function loadPdfFieldToggles() {
+    PDF_FIELD_TOGGLE_KEYS.forEach(key => {
+        const el = document.getElementById(key + 'PdfToggle');
+        if (!el) return;
+        const saved = localStorage.getItem('pdfFieldVisible_' + key);
+        el.checked = saved === null ? true : saved === '1';
+    });
+}
+
+function onPdfFieldToggleChange() {
+    PDF_FIELD_TOGGLE_KEYS.forEach(key => {
+        const el = document.getElementById(key + 'PdfToggle');
+        if (el) localStorage.setItem('pdfFieldVisible_' + key, el.checked ? '1' : '0');
+    });
+    updateReport();
+}
+
+function isPdfFieldVisible(key) {
+    const el = document.getElementById(key + 'PdfToggle');
+    return el ? el.checked : true;
+}
+
+// يُخفي/يُظهر مربع معلومة واحد بالكامل (العنوان والقيمة معاً) في قالب الـPDF
+function setInfoBoxVisibility(boxId, visible) {
+    const valueEl = document.getElementById(boxId);
+    if (!valueEl) return;
+    const wrapper = valueEl.closest('.info-box');
+    if (wrapper) wrapper.style.display = visible ? '' : 'none';
+}
+
+// يعيد حساب عدد أعمدة شبكة معلومات متساوية العرض (.info-grid) بناءً على عدد
+// المربعات الظاهرة فعلياً فيها، حتى لا يترك إخفاء مربع فراغاً في الشبكة
+function reflowEqualInfoGrid(gridEl) {
+    if (!gridEl) return;
+    const visibleCount = Array.from(gridEl.children).filter(box => box.style.display !== 'none').length;
+    gridEl.style.gridTemplateColumns = 'repeat(' + Math.max(visibleCount, 1) + ', 1fr)';
+}
+
+// شبكة عنوان التقرير (.info-grid2) في قالب "داخل الصف" ليست متساوية الأعمدة
+// (عمود اسم التقرير أعرض عمداً لمنع تراكب العناوين الطويلة)، لذا تُعاد بنسبتها
+// الأصلية بدل تقسيم متساوٍ عام، حسب ظهور مربع "المادة" فقط (المربع الوحيد
+// القابل للإخفاء هنا؛ اسم التقرير والدرس يبقيان ظاهرين دائماً)
+function reflowInsideReportInfoGrid2() {
+    const grid = document.querySelector('#report-content .info-grid2');
+    if (!grid) return;
+    grid.style.gridTemplateColumns = isPdfFieldVisible('subject') ? '2fr 1fr 1fr' : '2fr 1fr';
+}
+
+function applyPdfFieldVisibility() {
+    // قالب "داخل الصف"
+    setInfoBoxVisibility('gradeBox', isPdfFieldVisible('grade'));
+    setInfoBoxVisibility('subjectBox', isPdfFieldVisible('subject'));
+    setInfoBoxVisibility('targetBox', isPdfFieldVisible('target'));
+    setInfoBoxVisibility('countBox', isPdfFieldVisible('count'));
+    reflowEqualInfoGrid(document.querySelector('#report-content .info-grid'));
+    reflowInsideReportInfoGrid2();
+
+    // قالب "خارج الصف" - لا يحتوي مربعي الصف/المادة إطلاقاً، فقط المستهدفون والعدد
+    // (حقلان مشتركان مع القالب الآخر، ونفس المفتاحين يتحكمان بهما معاً)
+    setInfoBoxVisibility('outsideTargetBox', isPdfFieldVisible('target'));
+    setInfoBoxVisibility('outsideCountBox', isPdfFieldVisible('count'));
+    reflowEqualInfoGrid(document.querySelector('#report-content-outside .info-grid'));
+}
+
+// ==================== إخفاء الأقسام الاختيارية الفارغة بالكامل من ملف الـPDF ====================
+// قسما "الأدوات والوسائل التعليمية" و"المرفقات والصور" اختياريان بالكامل: إن لم
+// يحدد المعلم أي أداة أو يرفع أي صورة، لا يظهر القسم إطلاقاً في التقرير النهائي
+// بدل ترك مربع فارغ أو رسالة "لا يوجد". كلا القسمين عنصر block عادي ضمن التدفق
+// الرأسي للتقرير (ليسا عنصرين داخل شبكة أكبر) فإخفاؤهما لا يترك أي فراغ ولا
+// يحتاج أي إعادة حساب لعناصر أخرى - الأقسام التالية تصعد لتملأ المساحة تلقائياً.
+function updateImagesVisibility() {
+    [['imgBox1', 'imgBox2'], ['outsideImgBox1', 'outsideImgBox2']].forEach(ids => {
+        const boxes = ids.map(id => document.getElementById(id)).filter(Boolean);
+        if (boxes.length === 0) return;
+        const anyImage = boxes.some(box => box.querySelector('img'));
+        const wrapper = boxes[0].closest('.images');
+        if (wrapper) wrapper.style.display = anyImage ? '' : 'none';
+    });
 }
 
 function updateReport() {
@@ -5719,13 +5861,18 @@ function updateReport() {
     if (recommBox) recommBox.innerHTML = isolateLatinRuns(document.getElementById('recomm').value || 'لم يتم تحديد التوصيات');
     
     updateToolsDisplay();
-    
+
     updateOutsideReport();
     updateAdminReport();
     updateSupervisorReport();
     updateActivityReport();
     updateStudentReport();
     updateHealthReport();
+
+    // إظهار/إخفاء الحقول الاختيارية في PDF حسب مفاتيح "PDF" + إخفاء قسمي الأدوات/الصور
+    // بالكامل إن كانا فارغين - راجع التعريفات أعلى هذه الدالة
+    applyPdfFieldVisibility();
+    updateImagesVisibility();
 
     // مؤشر تقدم عرضي فقط للأقسام السبعة في الصفحة الرئيسية - لا يغيّر أي منطق أو بيانات
     if (typeof updateMainSectionsProgress === 'function') updateMainSectionsProgress();
@@ -5820,15 +5967,11 @@ function updateToolsDisplay() {
         toolElement.innerHTML = `<span>✓</span> ${tool}`;
         toolsListBox.appendChild(toolElement);
     });
-    if (selectedTools.length === 0) {
-        const noToolsMessage = document.createElement('div');
-        noToolsMessage.style.textAlign = 'center';
-        noToolsMessage.style.color = '#666';
-        noToolsMessage.style.fontSize = '9px';
-        noToolsMessage.style.padding = '4px';
-        noToolsMessage.textContent = 'لم يتم اختيار أي أدوات';
-        toolsListBox.appendChild(noToolsMessage);
-    }
+    // القسم اختياري بالكامل: إن لم يُحدَّد أي أداة لا يظهر قسم "الأدوات" إطلاقاً في
+    // ملف الـPDF (بدل رسالة "لم يتم اختيار أي أدوات" سابقاً) تفادياً لأي فراغ غير
+    // ضروري. عنصر block عادي فلا حاجة لإعادة حساب أي شبكة (grid).
+    const toolsBox = toolsListBox.closest('.tools-box');
+    if (toolsBox) toolsBox.style.display = selectedTools.length ? '' : 'none';
 }
 
 function loadImage(input, ...targetIds) {
@@ -5844,6 +5987,7 @@ function loadImage(input, ...targetIds) {
                     imgBox.appendChild(img);
                 }
             });
+            updateImagesVisibility();
             if (typeof updateMainSectionsProgress === 'function') updateMainSectionsProgress();
         };
         reader.readAsDataURL(input.files[0]);
@@ -6744,6 +6888,11 @@ async function downloadPDF() {
     const element = getActiveReportTemplate();
     if (!element) return;
 
+    // شبكة تحقق أخيرة قبل الالتقاط: تضمن أن حالة مفاتيح "PDF" وقسمي الأدوات/الصور
+    // منعكسة فعلاً على القالب المُصدَّر حتى لو لم يمرّ المستخدم بحقل يستدعي updateReport()
+    applyPdfFieldVisibility();
+    updateImagesVisibility();
+
     element.style.display = 'block';
     element.style.visibility = 'visible';
     element.style.opacity = '1';
@@ -6796,6 +6945,10 @@ async function sharePDFWhatsApp() {
 
     const element = getActiveReportTemplate();
     if (!element) return;
+
+    // راجع التعليق المطابق في downloadPDF()
+    applyPdfFieldVisibility();
+    updateImagesVisibility();
 
     element.style.display = 'block';
     element.style.visibility = 'visible';
@@ -7153,6 +7306,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const backendRole = getBackendRole('teacher');
     await loadDataFromBackend(backendRole);
     loadTeacherData();
+    loadPdfFieldToggles();
     updateReport();
     document.getElementById('reportSearch').addEventListener('input', handleReportSearch);
     document.addEventListener('click', function(e) { if (!e.target.closest('#reportSearchContainer')) document.getElementById('searchResults').style.display = 'none'; });
