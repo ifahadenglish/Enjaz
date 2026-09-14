@@ -1467,6 +1467,26 @@ button[title]:hover::before {
     .main-accordion-desc { display: none; }
 }
 
+.main-accordion-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 10px auto 0;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    color: var(--text-light);
+    background: var(--gray-light);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    width: fit-content;
+}
+.main-accordion-close-btn:hover { background: var(--border); }
+.main-accordion-close-btn i { font-size: 10px; }
+
 @media (max-width: 400px) {
     #activationScreen .activation-box { padding: 18px 16px; }
     .auth-tab { font-size: 12px; padding: 10px 4px; }
@@ -2905,7 +2925,7 @@ button[title]:hover::before {
     object-position: center 17%;
 }
 @media (min-width: 1024px) {
-    .brand-hero-img { height: 170px; object-position: center; }
+    .brand-hero-img { height: 170px; }
 }
 
 /* ==================== شريط التنقل السفلي ==================== */
@@ -3701,6 +3721,10 @@ button[title]:hover::before {
         </div>
       </div>
 
+      <button type="button" class="main-accordion-close-btn" onclick="closeMainSection(1)">
+        <i class="fas fa-chevron-up"></i> إغلاق القسم
+      </button>
+
     </div>
   </div>
 
@@ -3727,6 +3751,10 @@ button[title]:hover::before {
         <textarea id="summary" placeholder="أدخل نبذة مختصرة" oninput="updateReport()"></textarea>
       </div>
 
+      <button type="button" class="main-accordion-close-btn" onclick="closeMainSection(2)">
+        <i class="fas fa-chevron-up"></i> إغلاق القسم
+      </button>
+
     </div>
   </div>
 
@@ -3752,6 +3780,10 @@ button[title]:hover::before {
         <label for="strategies"><i class="fas fa-chess-board"></i> <span id="strategiesLabel">الاستراتيجيات</span></label>
         <textarea id="strategies" placeholder="ما هي الاستراتيجيات المستخدمة" oninput="updateReport()"></textarea>
       </div>
+
+      <button type="button" class="main-accordion-close-btn" onclick="closeMainSection(3)">
+        <i class="fas fa-chevron-up"></i> إغلاق القسم
+      </button>
 
     </div>
   </div>
@@ -3790,6 +3822,10 @@ button[title]:hover::before {
       <div id="largeExtraFields" class="large-extra-fields" style="display: none;">
         <h4><i class="fas fa-list"></i> تفاصيل إضافية</h4>
       </div>
+
+      <button type="button" class="main-accordion-close-btn" onclick="closeMainSection(4)">
+        <i class="fas fa-chevron-up"></i> إغلاق القسم
+      </button>
 
     </div>
   </div>
@@ -3842,6 +3878,10 @@ button[title]:hover::before {
         </div>
       </div>
 
+      <button type="button" class="main-accordion-close-btn" onclick="closeMainSection(5)">
+        <i class="fas fa-chevron-up"></i> إغلاق القسم
+      </button>
+
     </div>
   </div>
 
@@ -3868,6 +3908,10 @@ button[title]:hover::before {
           <input type="file" accept="image/*" onchange="loadImage(this,'imgBox2','outsideImgBox2','adminImgBox2','supervisorImgBox2','activityImgBox2','studentImgBox2','healthImgBox2')">
         </div>
       </div>
+
+      <button type="button" class="main-accordion-close-btn" onclick="closeMainSection(6)">
+        <i class="fas fa-chevron-up"></i> إغلاق القسم
+      </button>
 
     </div>
   </div>
@@ -5380,6 +5424,20 @@ function toggleMainSection(n) {
 
     const isOpen = body.classList.toggle('open');
     if (chevron) chevron.classList.toggle('rotated', isOpen);
+}
+
+// إغلاق قسم محدد بشكل مباشر (يُستخدم من زر "إغلاق القسم" أسفل كل قسم مفتوح،
+// حتى لا يضطر المستخدم للصعود إلى الأعلى للنقر على رأس القسم)
+function closeMainSection(n) {
+    const body = document.getElementById('mainSection' + n);
+    const chevron = document.getElementById('mainSection' + n + 'Chevron');
+    if (!body) return;
+    body.classList.remove('open');
+    if (chevron) chevron.classList.remove('rotated');
+    const header = document.querySelector('.main-accordion-section[data-section="' + n + '"] .main-accordion-header');
+    if (header && isMobileAccordionMode()) {
+        header.scrollIntoView({ block: 'nearest' });
+    }
 }
 
 // فحص عرضي بسيط: هل تحتوي حقول هذا القسم على أي محتوى؟ (لا يمثل قاعدة تحقق أو عمل جديدة)
