@@ -5356,6 +5356,40 @@ function updateOutsideToolsList() {
 }
 
 // ==================== تحديثات PDF ====================
+// تحويل النص الخام إلى HTML آمن مع عزل أي مقطع إنجليزي (أو أرقام لاتينية) داخل
+// وسم <bdi> (Bidirectional Isolate). هذا يمنع مشكلة تراكب/تشوّه الأحرف التي
+// تظهر في بعض المتصفحات (خصوصاً Safari على الآيفون) عندما تُدرَج عبارة إنجليزية
+// من أكثر من كلمة داخل جملة عربية والتفّ السطر - لأن اتجاه كل عبارة إنجليزية
+// يُحسب الآن بمعزل عن سياق النص العربي المحيط بها بدل أن يتداخل معه، وهو ما
+// يحل أيضاً ظهور فواصل إنجليزية (,) في غير موضعها داخل الجملة العربية.
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function isolateLatinRuns(rawText) {
+    // مهم: نبحث عن المقاطع اللاتينية في النص الخام أولاً ثم نُهرب كل جزء على حِدة
+    // (الجزء العربي والجزء اللاتيني) - تهريب النص كاملاً ثم البحث فيه عن المقاطع
+    // يكسر أي محارف HTML خاصة (& < > " ') لأنها تتحول لرموز مثل &amp; التي
+    // تحتوي بدورها على أحرف لاتينية قد تلتقطها نفس الدالة عن طريق الخطأ.
+    const str = String(rawText);
+    const pattern = /[A-Za-z0-9]+(?:[ ,.&'\-\/]+[A-Za-z0-9]+)*/g;
+    let result = '';
+    let lastIndex = 0;
+    let match;
+    while ((match = pattern.exec(str)) !== null) {
+        result += escapeHtml(str.slice(lastIndex, match.index));
+        result += '<bdi>' + escapeHtml(match[0]) + '</bdi>';
+        lastIndex = match.index + match[0].length;
+    }
+    result += escapeHtml(str.slice(lastIndex));
+    return result;
+}
+
 function updateReport() {
     const role = document.getElementById('role').value;
     const place = document.getElementById('place').value;
@@ -5364,67 +5398,67 @@ function updateReport() {
     renderAccountSummary();
 
     const educationBox = document.getElementById('educationBox');
-    if (educationBox) educationBox.innerText = document.getElementById('education').value || 'غير محدد';
+    if (educationBox) educationBox.innerHTML = isolateLatinRuns(document.getElementById('education').value || 'غير محدد');
     
     const schoolBox = document.getElementById('schoolBox');
-    if (schoolBox) schoolBox.innerText = document.getElementById('school').value || 'غير محدد';
+    if (schoolBox) schoolBox.innerHTML = isolateLatinRuns(document.getElementById('school').value || 'غير محدد');
     
     const termBox = document.getElementById('termBox');
-    if (termBox) termBox.innerText = document.getElementById('term').value ? `الفصل الدراسي ${document.getElementById('term').value}` : 'غير محدد';
+    if (termBox) termBox.innerHTML = isolateLatinRuns(document.getElementById('term').value ? `الفصل الدراسي ${document.getElementById('term').value}` : 'غير محدد');
     
     const gradeBox = document.getElementById('gradeBox');
-    if (gradeBox) gradeBox.innerText = document.getElementById('grade')?.value || 'غير محدد';
+    if (gradeBox) gradeBox.innerHTML = isolateLatinRuns(document.getElementById('grade')?.value || 'غير محدد');
     
     const countBox = document.getElementById('countBox');
-    if (countBox) countBox.innerText = document.getElementById('count').value || 'غير محدد';
+    if (countBox) countBox.innerHTML = isolateLatinRuns(document.getElementById('count').value || 'غير محدد');
     
     const reportTypeBox = document.getElementById('reportTypeBox');
-    if (reportTypeBox) reportTypeBox.innerText = document.getElementById('manualReportTitle').value || 'تقرير';
+    if (reportTypeBox) reportTypeBox.innerHTML = isolateLatinRuns(document.getElementById('manualReportTitle').value || 'تقرير');
     
     const targetBox = document.getElementById('targetBox');
-    if (targetBox) targetBox.innerText = document.getElementById('target').value || 'غير محدد';
+    if (targetBox) targetBox.innerHTML = isolateLatinRuns(document.getElementById('target').value || 'غير محدد');
     
     const placeBox = document.getElementById('placeBox');
-    if (placeBox) placeBox.innerText = document.getElementById('place').value === 'داخل الصف' ? 'داخل الصف' : (getDetailedPlaceValue() || 'خارج الصف');
+    if (placeBox) placeBox.innerHTML = isolateLatinRuns(document.getElementById('place').value === 'داخل الصف' ? 'داخل الصف' : (getDetailedPlaceValue() || 'خارج الصف'));
     
     const subjectBox = document.getElementById('subjectBox');
-    if (subjectBox) subjectBox.innerText = document.getElementById('subject')?.value || 'غير محدد';
+    if (subjectBox) subjectBox.innerHTML = isolateLatinRuns(document.getElementById('subject')?.value || 'غير محدد');
     
     const lessonBox = document.getElementById('lessonBox');
-    if (lessonBox) lessonBox.innerText = document.getElementById('lesson')?.value || 'غير محدد';
+    if (lessonBox) lessonBox.innerHTML = isolateLatinRuns(document.getElementById('lesson')?.value || 'غير محدد');
     
     const reporterNameBox = document.getElementById('reporterNameBox');
-    if (reporterNameBox) reporterNameBox.innerText = document.getElementById('reporterName').value || 'غير محدد';
+    if (reporterNameBox) reporterNameBox.innerHTML = isolateLatinRuns(document.getElementById('reporterName').value || 'غير محدد');
     
     const principalBox = document.getElementById('principalBox');
-    if (principalBox) principalBox.innerText = document.getElementById('principal').value || 'غير محدد';
+    if (principalBox) principalBox.innerHTML = isolateLatinRuns(document.getElementById('principal').value || 'غير محدد');
     
     const reporterTypeBox = document.getElementById('reporterTypeBox');
-    if (reporterTypeBox) reporterTypeBox.innerText = document.getElementById('reporterType').value || 'مقدم التقرير';
+    if (reporterTypeBox) reporterTypeBox.innerHTML = isolateLatinRuns(document.getElementById('reporterType').value || 'مقدم التقرير');
     
     const principalTypeBox = document.getElementById('principalTypeBox');
-    if (principalTypeBox) principalTypeBox.innerText = document.getElementById('principalTypeDisplay').value || 'المدير';
+    if (principalTypeBox) principalTypeBox.innerHTML = isolateLatinRuns(document.getElementById('principalTypeDisplay').value || 'المدير');
     
     const goalBox = document.getElementById('goalBox');
-    if (goalBox) goalBox.innerText = document.getElementById('goal').value || 'لم يتم تحديد الهدف التربوي';
+    if (goalBox) goalBox.innerHTML = isolateLatinRuns(document.getElementById('goal').value || 'لم يتم تحديد الهدف التربوي');
     
     const summaryBox = document.getElementById('summaryBox');
-    if (summaryBox) summaryBox.innerText = document.getElementById('summary').value || 'لم يتم إضافة نبذة مختصرة';
+    if (summaryBox) summaryBox.innerHTML = isolateLatinRuns(document.getElementById('summary').value || 'لم يتم إضافة نبذة مختصرة');
     
     const stepsBox = document.getElementById('stepsBox');
-    if (stepsBox) stepsBox.innerText = document.getElementById('steps').value || 'لم يتم تحديد إجراءات التنفيذ';
+    if (stepsBox) stepsBox.innerHTML = isolateLatinRuns(document.getElementById('steps').value || 'لم يتم تحديد إجراءات التنفيذ');
     
     const strategiesBox = document.getElementById('strategiesBox');
-    if (strategiesBox) strategiesBox.innerText = document.getElementById('strategies').value || 'لم يتم تحديد الاستراتيجيات';
+    if (strategiesBox) strategiesBox.innerHTML = isolateLatinRuns(document.getElementById('strategies').value || 'لم يتم تحديد الاستراتيجيات');
     
     const strengthsBox = document.getElementById('strengthsBox');
-    if (strengthsBox) strengthsBox.innerText = document.getElementById('strengths').value || 'لم يتم تحديد نقاط القوة';
+    if (strengthsBox) strengthsBox.innerHTML = isolateLatinRuns(document.getElementById('strengths').value || 'لم يتم تحديد نقاط القوة');
     
     const improveBox = document.getElementById('improveBox');
-    if (improveBox) improveBox.innerText = document.getElementById('improve').value || 'لم يتم تحديد نقاط التحسين';
+    if (improveBox) improveBox.innerHTML = isolateLatinRuns(document.getElementById('improve').value || 'لم يتم تحديد نقاط التحسين');
     
     const recommBox = document.getElementById('recommBox');
-    if (recommBox) recommBox.innerText = document.getElementById('recomm').value || 'لم يتم تحديد التوصيات';
+    if (recommBox) recommBox.innerHTML = isolateLatinRuns(document.getElementById('recomm').value || 'لم يتم تحديد التوصيات');
     
     updateToolsDisplay();
     
@@ -5444,58 +5478,58 @@ function updateOutsideReport() {
     if (place !== 'خارج الصف') return;
     
     const schoolBox = document.getElementById('outsideSchoolBox');
-    if (schoolBox) schoolBox.innerText = document.getElementById('school').value || 'غير محدد';
+    if (schoolBox) schoolBox.innerHTML = isolateLatinRuns(document.getElementById('school').value || 'غير محدد');
     
     const educationBox = document.getElementById('outsideEducationBox');
-    if (educationBox) educationBox.innerText = document.getElementById('education').value || 'غير محدد';
+    if (educationBox) educationBox.innerHTML = isolateLatinRuns(document.getElementById('education').value || 'غير محدد');
     
     const termBox = document.getElementById('outsideTermBox');
-    if (termBox) termBox.innerText = document.getElementById('term').value ? `الفصل الدراسي ${document.getElementById('term').value}` : 'غير محدد';
+    if (termBox) termBox.innerHTML = isolateLatinRuns(document.getElementById('term').value ? `الفصل الدراسي ${document.getElementById('term').value}` : 'غير محدد');
     
     const countBox = document.getElementById('outsideCountBox');
-    if (countBox) countBox.innerText = document.getElementById('count').value || 'غير محدد';
+    if (countBox) countBox.innerHTML = isolateLatinRuns(document.getElementById('count').value || 'غير محدد');
     
     const reportTypeBox = document.getElementById('outsideReportTypeBox');
-    if (reportTypeBox) reportTypeBox.innerText = document.getElementById('manualReportTitle').value || 'تقرير';
+    if (reportTypeBox) reportTypeBox.innerHTML = isolateLatinRuns(document.getElementById('manualReportTitle').value || 'تقرير');
     
     const targetBox = document.getElementById('outsideTargetBox');
-    if (targetBox) targetBox.innerText = document.getElementById('target').value || 'غير محدد';
+    if (targetBox) targetBox.innerHTML = isolateLatinRuns(document.getElementById('target').value || 'غير محدد');
     
     const detailedPlaceBox = document.getElementById('outsideDetailedPlaceBox');
-    if (detailedPlaceBox) detailedPlaceBox.innerText = getDetailedPlaceValue() || 'غير محدد';
+    if (detailedPlaceBox) detailedPlaceBox.innerHTML = isolateLatinRuns(getDetailedPlaceValue() || 'غير محدد');
     
     const reporterNameBox = document.getElementById('outsideReporterNameBox');
-    if (reporterNameBox) reporterNameBox.innerText = document.getElementById('reporterName').value || 'غير محدد';
+    if (reporterNameBox) reporterNameBox.innerHTML = isolateLatinRuns(document.getElementById('reporterName').value || 'غير محدد');
     
     const principalBox = document.getElementById('outsidePrincipalBox');
-    if (principalBox) principalBox.innerText = document.getElementById('principal').value || 'غير محدد';
+    if (principalBox) principalBox.innerHTML = isolateLatinRuns(document.getElementById('principal').value || 'غير محدد');
     
     const reporterTypeBox = document.getElementById('outsideReporterTypeBox');
-    if (reporterTypeBox) reporterTypeBox.innerText = document.getElementById('reporterType').value || 'مقدم التقرير';
+    if (reporterTypeBox) reporterTypeBox.innerHTML = isolateLatinRuns(document.getElementById('reporterType').value || 'مقدم التقرير');
     
     const principalTypeBox = document.getElementById('outsidePrincipalTypeBox');
-    if (principalTypeBox) principalTypeBox.innerText = document.getElementById('principalTypeDisplay').value || 'المدير';
+    if (principalTypeBox) principalTypeBox.innerHTML = isolateLatinRuns(document.getElementById('principalTypeDisplay').value || 'المدير');
     
     const goalBox = document.getElementById('outsideGoalBox');
-    if (goalBox) goalBox.innerText = document.getElementById('goal').value || 'لم يتم تحديد الهدف التربوي';
+    if (goalBox) goalBox.innerHTML = isolateLatinRuns(document.getElementById('goal').value || 'لم يتم تحديد الهدف التربوي');
     
     const summaryBox = document.getElementById('outsideSummaryBox');
-    if (summaryBox) summaryBox.innerText = document.getElementById('summary').value || 'لم يتم إضافة نبذة مختصرة';
+    if (summaryBox) summaryBox.innerHTML = isolateLatinRuns(document.getElementById('summary').value || 'لم يتم إضافة نبذة مختصرة');
     
     const stepsBox = document.getElementById('outsideStepsBox');
-    if (stepsBox) stepsBox.innerText = document.getElementById('steps').value || 'لم يتم تحديد إجراءات التنفيذ';
+    if (stepsBox) stepsBox.innerHTML = isolateLatinRuns(document.getElementById('steps').value || 'لم يتم تحديد إجراءات التنفيذ');
     
     const strategiesBox = document.getElementById('outsideStrategiesBox');
-    if (strategiesBox) strategiesBox.innerText = document.getElementById('strategies').value || 'لم يتم تحديد الاستراتيجيات';
+    if (strategiesBox) strategiesBox.innerHTML = isolateLatinRuns(document.getElementById('strategies').value || 'لم يتم تحديد الاستراتيجيات');
     
     const strengthsBox = document.getElementById('outsideStrengthsBox');
-    if (strengthsBox) strengthsBox.innerText = document.getElementById('strengths').value || 'لم يتم تحديد نقاط القوة';
+    if (strengthsBox) strengthsBox.innerHTML = isolateLatinRuns(document.getElementById('strengths').value || 'لم يتم تحديد نقاط القوة');
     
     const improveBox = document.getElementById('outsideImproveBox');
-    if (improveBox) improveBox.innerText = document.getElementById('improve').value || 'لم يتم تحديد نقاط التحسين';
+    if (improveBox) improveBox.innerHTML = isolateLatinRuns(document.getElementById('improve').value || 'لم يتم تحديد نقاط التحسين');
     
     const recommBox = document.getElementById('outsideRecommBox');
-    if (recommBox) recommBox.innerText = document.getElementById('recomm').value || 'لم يتم تحديد التوصيات';
+    if (recommBox) recommBox.innerHTML = isolateLatinRuns(document.getElementById('recomm').value || 'لم يتم تحديد التوصيات');
     
     updateOutsideToolsList();
 }
