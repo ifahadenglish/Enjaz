@@ -1309,20 +1309,20 @@ button[title]:hover::before {
 .ai-sections-notice {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
     background: #f1ecfb;
     color: #4a3a7a;
     border-radius: 12px;
-    padding: 8px 12px;
+    padding: 7px 10px;
     margin-bottom: 8px;
-    font-size: 11px;
-    line-height: 1.45;
+    font-size: 10px;
+    line-height: 1.4;
 }
 
 .ai-sections-notice-icon {
     flex-shrink: 0;
     color: #6b46c1;
-    font-size: 14px;
+    font-size: 12px;
     margin-top: 1px;
 }
 
@@ -2925,7 +2925,12 @@ button[title]:hover::before {
     object-position: center 17%;
 }
 @media (min-width: 1024px) {
-    .brand-hero-img { height: 170px; }
+    /* على الحاسوب تكبر بطاقة الصورة (brand-promo-card) بلا حد أقصى للعرض (max-width:none
+       أدناه)، فلو بقي ارتفاع الصورة رقماً ثابتاً (170px) كانت نسبة القص الرأسي تزداد كلما
+       اتسعت الشاشة، لدرجة قص عبارة "بخطوات بسيطة .. لنتائج أكبر" بالكامل على الشاشات
+       الواسعة. الحل: اجعل الارتفاع نسبة ثابتة من العرض (aspect-ratio) بدل رقم مطلق، لتبقى
+       نسبة الجزء الظاهر من الصورة (وبالتالي العنوان والعبارة الفرعية) ثابتة على كل الأحجام. */
+    .brand-hero-img { height: auto; aspect-ratio: 5 / 1; object-position: center 29%; }
 }
 
 /* ==================== شريط التنقل السفلي ==================== */
@@ -3316,6 +3321,16 @@ button[title]:hover::before {
     }
     .main-progress-bar .main-progress-label { font-size: 18px; }
     .main-progress-bar .main-progress-track { height: 14px; }
+
+    .ai-sections-notice {
+        gap: 12px;
+        padding: 16px 20px;
+        border-radius: 14px;
+        margin-bottom: 22px;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+    .ai-sections-notice-icon { font-size: 22px; margin-top: 2px; }
 
     .main-accordion-section { margin-bottom: 20px; border-radius: 18px; }
 
