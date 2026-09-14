@@ -996,6 +996,69 @@ button[title]:hover::before {
     border-right-color: #ffe3a3;
 }
 
+/* تنبيه إكمال بيانات التقرير الأساسية في الواجهة الرئيسية - يستخدم نفس ألوان
+   إشعار التحذير الموجود مسبقاً في التطبيق للحفاظ على الاتساق البصري، لكنه ثابت
+   ضمن تدفق الصفحة (لا position:fixed) ويبقى ظاهراً حتى تكتمل البيانات.
+   ملاحظة مهمة: العنصر يقع مباشرة بعد .top-marquee ضمن #homePage، لكن الهيدر
+   (.app-header) والشريط الإخباري (.top-marquee) وشريط الأزرار (.main-buttons-bar)
+   كلها position:fixed على الجوال/التابلت (حتى 1024px) - لذلك عند ظهور التنبيه
+   نمنحه نفس مسافة الإزاحة العلوية المستخدمة أصلاً مع .brand-promo-card (أول عنصر
+   في التدفق الطبيعي سابقاً) لتفادي اختفائه خلف الأشرطة الثابتة؛ وعلى الحاسوب
+   (≥1024px) تتحول هذه الأشرطة إلى static فلا حاجة لأي إزاحة. */
+.basic-data-alert {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #f2a341 0%, #c9791a 100%);
+    color: #fff;
+    border-right: 5px solid #ffe3a3;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 0 auto 16px;
+    max-width: 880px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.basic-data-alert.show {
+    display: flex;
+    margin-top: 177px;
+}
+@media (max-width: 768px) { .basic-data-alert.show { margin-top: 167px; } }
+@media (max-width: 480px) { .basic-data-alert.show { margin-top: 157px; } }
+@media (min-width: 1024px) { .basic-data-alert.show { margin-top: 14px; } }
+
+.basic-data-alert i.basic-data-alert-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.basic-data-alert-text {
+    flex: 1;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.basic-data-alert-text strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.basic-data-alert-btn {
+    background: #fff;
+    color: #c9791a;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
 .notification i {
     font-size: 18px;
 }
@@ -2080,7 +2143,7 @@ button[title]:hover::before {
     position: absolute;
     right: 12px;
     top: 45px;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 700;
     max-width: 70%;
     overflow: hidden;
@@ -2094,7 +2157,7 @@ button[title]:hover::before {
     left: 50%;
     bottom: 18px;
     transform: translateX(-50%);
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 800;
     text-align: center;
     width: 100%;
@@ -2140,10 +2203,12 @@ button[title]:hover::before {
     }
 }
 
-/* الصف العلوي بخمس خانات */
+/* الصف العلوي - أصبحت 6 خانات بعد فصل "الفصل/الشعبة" عن "الصف" كحقل مستقل
+   (كانت 5 خانات سابقاً؛ لا يؤثر هذا على قالب خارج الصف لأن لديه قاعدة خاصة به
+   بعدد أعمدة مختلف أدناه). */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 6px;
     margin-bottom: 6px;
 }
@@ -2186,6 +2251,12 @@ button[title]:hover::before {
     text-overflow: ellipsis;
     white-space: nowrap;
     font-family: 'Amiri', 'Cairo', sans-serif;
+}
+
+/* عنوان/اسم التقرير أهم بصرياً من بقية صناديق المعلومات الصغيرة (الصف، العدد...)
+   لذا يكبَّر قليلاً عن باقي .info-value دون المساس بأي صندوق آخر. */
+.info-value-report-title {
+    font-size: 14px;
 }
 
 .subject-lesson-box {
@@ -3333,6 +3404,18 @@ button[title]:hover::before {
 </div>
 </div>
 
+<!-- تنبيه إكمال بيانات التقرير الأساسية (اسم مقدم التقرير، إدارة التعليم، المدرسة،
+     اسم المدير) - يظهر تلقائياً عند نقص أي منها ويختفي فور اكتمالها، عبر
+     updateBasicDataAlert() التي تُستدعى من renderAccountSummary(). -->
+<div class="basic-data-alert" id="basicDataAlert">
+  <i class="fas fa-triangle-exclamation basic-data-alert-icon"></i>
+  <div class="basic-data-alert-text">
+    <strong>أكمل بيانات التقرير الأساسية</strong>
+    <span id="basicDataAlertMissing"></span>
+  </div>
+  <button type="button" class="basic-data-alert-btn" onclick="showPage('account')">إكمال البيانات</button>
+</div>
+
 <!-- ========== شبكة لوحة تحكم الحاسوب (PC) - عمود جانبي معلوماتي + العمود الرئيسي؛ على الهاتف تبقى بلا تأثير (لا Grid) ========== -->
 <div class="dashboard-grid">
 
@@ -3519,7 +3602,25 @@ button[title]:hover::before {
           <div class="form-row">
             <div class="form-group">
               <label for="grade"><i class="fas fa-users-class"></i> الصف</label>
-              <input id="grade" placeholder="مثال: ٥/٣" oninput="updateReport()">
+              <select id="grade" oninput="updateReport()">
+                <option value="">اختر الصف</option>
+                <option value="الأول ابتدائي">الأول ابتدائي</option>
+                <option value="الثاني ابتدائي">الثاني ابتدائي</option>
+                <option value="الثالث ابتدائي">الثالث ابتدائي</option>
+                <option value="الرابع ابتدائي">الرابع ابتدائي</option>
+                <option value="الخامس ابتدائي">الخامس ابتدائي</option>
+                <option value="السادس ابتدائي">السادس ابتدائي</option>
+                <option value="الأول متوسط">الأول متوسط</option>
+                <option value="الثاني متوسط">الثاني متوسط</option>
+                <option value="الثالث متوسط">الثالث متوسط</option>
+                <option value="الأول ثانوي">الأول ثانوي</option>
+                <option value="الثاني ثانوي">الثاني ثانوي</option>
+                <option value="الثالث ثانوي">الثالث ثانوي</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="classSection"><i class="fas fa-hashtag"></i> الفصل / الشعبة</label>
+              <input id="classSection" placeholder="مثال: أ، ب، ج، 1، 2" oninput="updateReport()">
             </div>
           </div>
           <div class="form-row">
@@ -3908,17 +4009,18 @@ button[title]:hover::before {
   <div class="header-date" id="combinedDateInside"></div>
 </div>
 
-<!-- الصف العلوي بخمس خانات -->
+<!-- الصف العلوي بست خانات (بعد إضافة خانة الفصل/الشعبة) -->
 <div class="info-grid">
   <div class="info-box"><div class="info-title">الفصل الدراسي</div><div class="info-value" id="termBox"></div></div>
   <div class="info-box"><div class="info-title">مكان التنفيذ</div><div class="info-value" id="placeBox"></div></div>
   <div class="info-box"><div class="info-title">الصف</div><div class="info-value" id="gradeBox"></div></div>
+  <div class="info-box"><div class="info-title">الفصل / الشعبة</div><div class="info-value" id="classSectionBox"></div></div>
   <div class="info-box"><div class="info-title">المستهدفون</div><div class="info-value" id="targetBox"></div></div>
   <div class="info-box"><div class="info-title">العدد</div><div class="info-value" id="countBox"></div></div>
 </div>
 
 <div class="info-grid2">
-  <div class="info-box"><div class="info-title">نوع التقرير</div><div class="info-value" id="reportTypeBox"></div></div>
+  <div class="info-box"><div class="info-title">اسم التقرير</div><div class="info-value info-value-report-title" id="reportTypeBox"></div></div>
   <div class="subject-lesson-box">
     <div class="subject-lesson-title">المادة | الدرس</div>
     <div class="subject-lesson">
@@ -3997,7 +4099,7 @@ button[title]:hover::before {
 
 <!-- الصف الثاني: نوع التقرير فقط -->
 <div class="info-grid2">
-  <div class="info-box"><div class="info-title">نوع التقرير</div><div class="info-value" id="outsideReportTypeBox"></div></div>
+  <div class="info-box"><div class="info-title">اسم التقرير</div><div class="info-value info-value-report-title" id="outsideReportTypeBox"></div></div>
 </div>
 
 <div class="box">
@@ -5408,7 +5510,10 @@ function updateReport() {
     
     const gradeBox = document.getElementById('gradeBox');
     if (gradeBox) gradeBox.innerHTML = isolateLatinRuns(document.getElementById('grade')?.value || 'غير محدد');
-    
+
+    const classSectionBox = document.getElementById('classSectionBox');
+    if (classSectionBox) classSectionBox.innerHTML = isolateLatinRuns(document.getElementById('classSection')?.value || 'غير محدد');
+
     const countBox = document.getElementById('countBox');
     if (countBox) countBox.innerHTML = isolateLatinRuns(document.getElementById('count').value || 'غير محدد');
     
@@ -5786,6 +5891,7 @@ function saveCurrentReport() {
             reporterName: document.getElementById('reporterName').value,
             principal: document.getElementById('principal').value,
             grade: document.getElementById('grade')?.value || '',
+            classSection: document.getElementById('classSection')?.value || '',
             term: document.getElementById('term').value,
             subject: document.getElementById('subject')?.value || '',
             lesson: document.getElementById('lesson')?.value || '',
@@ -5859,6 +5965,7 @@ function loadSavedReport(criterionId) {
     document.getElementById('reporterName').value = report.data.reporterName || '';
     document.getElementById('principal').value = report.data.principal || '';
     if (document.getElementById('grade')) document.getElementById('grade').value = report.data.grade || '';
+    if (document.getElementById('classSection')) document.getElementById('classSection').value = report.data.classSection || '';
     document.getElementById('term').value = report.data.term || '';
     if (document.getElementById('subject')) document.getElementById('subject').value = report.data.subject || '';
     if (document.getElementById('lesson')) document.getElementById('lesson').value = report.data.lesson || '';
@@ -6267,6 +6374,7 @@ function saveTeacherData() {
     // الحساب بنسخة قديمة محفوظة محلياً عند تحميل الصفحة.
     const teacherData = {
         grade: document.getElementById('grade')?.value || '',
+        classSection: document.getElementById('classSection')?.value || '',
         subject: document.getElementById('subject')?.value || '',
         target: document.getElementById('target').value,
         place: document.getElementById('place').value,
@@ -6324,6 +6432,7 @@ function loadTeacherData() {
         // education/school/reporterName/principal/reporterType/role لم تعد تُقرأ من هنا -
         // أصبحت بيانات حساب دائمة تُدار عبر loadAccountProfile() من صفحة "حسابي".
         if (document.getElementById('grade')) document.getElementById('grade').value = teacherData.grade || '';
+        if (document.getElementById('classSection')) document.getElementById('classSection').value = teacherData.classSection || '';
         if (document.getElementById('subject')) document.getElementById('subject').value = teacherData.subject || '';
         document.getElementById('target').value = teacherData.target || '';
         document.getElementById('place').value = teacherData.place || 'داخل الصف';
@@ -6381,6 +6490,7 @@ function clearData() {
     // التقرير الحالي، حتى لا يضطر المستخدم لإعادة إدخالها مع كل تقرير جديد.
     if (confirm("هل أنت متأكد من مسح بيانات هذا التقرير والنصوص المولدة؟")) {
         if (document.getElementById('grade')) document.getElementById('grade').value = '';
+        if (document.getElementById('classSection')) document.getElementById('classSection').value = '';
         document.getElementById('term').value = '';
         if (document.getElementById('subject')) document.getElementById('subject').value = '';
         if (document.getElementById('lesson')) document.getElementById('lesson').value = '';
@@ -6762,6 +6872,33 @@ function renderAccountSummary() {
     setView('accountViewSchool', document.getElementById('school')?.value);
     setView('accountViewPrincipalType', document.getElementById('principalTypeDisplay')?.value);
     setView('accountViewPrincipal', document.getElementById('principal')?.value);
+    updateBasicDataAlert();
+}
+
+// تنبيه إكمال بيانات التقرير الأساسية في الواجهة الرئيسية - يظهر عند نقص أي من
+// الحقول الأربعة (اسم مقدم التقرير، إدارة التعليم، المدرسة، اسم المدير) ويختفي
+// تلقائياً فور اكتمالها جميعاً. يُستدعى من renderAccountSummary() التي تُستدعى
+// أصلاً من updateReport() وبعد تحميل/حفظ بيانات الحساب، فيبقى التنبيه محدَّثاً
+// لحظياً دون الحاجة لأي منطق إضافي أو حفظ حالة جديد.
+function updateBasicDataAlert() {
+    const alertBox = document.getElementById('basicDataAlert');
+    if (!alertBox) return;
+    const fields = [
+        { id: 'reporterName', label: 'اسم مقدم التقرير' },
+        { id: 'education', label: 'إدارة التعليم' },
+        { id: 'school', label: 'اسم المدرسة' },
+        { id: 'principal', label: 'اسم المدير' }
+    ];
+    const missing = fields
+        .filter(f => !(document.getElementById(f.id)?.value || '').trim())
+        .map(f => f.label);
+    if (missing.length === 0) {
+        alertBox.classList.remove('show');
+        return;
+    }
+    const missingText = document.getElementById('basicDataAlertMissing');
+    if (missingText) missingText.textContent = 'الحقول الناقصة: ' + missing.join('، ');
+    alertBox.classList.add('show');
 }
 
 // يقرأ حالة الحساب مباشرة من جدول entitlements عبر Supabase (RLS تسمح للمستخدم
