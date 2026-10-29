@@ -1,0 +1,51 @@
+name: Supabase Keepalive (injaz-reports)
+
+# يمنع توقف مشروع Supabase المجاني تلقائياً (auto-pause) بسبب عدم النشاط.
+# ضع هذا الملف في المستودع تحت المسار: .github/workflows/supabase-keepalive.yml
+
+on:
+  schedule:
+    # كل يومين عند الساعة 06:00 UTC
+    - cron: "0 6 */2 * *"
+  # يسمح بتشغيله يدوياً من تبويب Actions في GitHub لتجربته أو لإعادة تنشيط
+  # الجدولة إذا أوقفها GitHub بسبب 60 يوم بلا تعديل في المستودع.
+  workflow_dispatch:
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: قراءة بسيطة من قاعدة البيانات (بدون أي تعديل)
+        env:
+          SUPABASE_URL: "https://exulmefyudxtvybadnds.supabase.co"
+          # المفتاح العام (anon key) الموجود أصلاً في موقعك — غير سري.
+          # ضَعه كـ Secret باسم SUPABASE_ANON_KEY في إعدادات المستودع
+          # (Settings → Secrets and variables → Actions) حتى لو كان عاماً،
+          # للحفاظ على نظافة الكود فقط.
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # غيّر اسم الجدول "reports" إلى اسم أي جدول عام حقيقي في مشروعك
+          # (يفضّل جدول صغير القراءة منه متاحة للعامة عبر RLS).
+          curl -sS --fail \
+            "$SUPABASE_URL/rest/v1/reports?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY"
+
+      - name: تعديل شكلي شهري لتجنّب تعطيل GitHub للجدولة بعد 60 يوماً خمول
+        run: |
+          mkdir -p .github/keepalive
+          DAY_OF_MONTH=$(date -u +%d)
+          if [ "$DAY_OF_MONTH" = "01" ]; then
+            date -u > .github/keepalive/last-run.txt
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .github/keepalive/last-run.txt
+            git commit -m "chore: keepalive ping $(date -u +%F)" || echo "لا تغييرات"
+            git push || echo "تعذر الدفع (تجاهل إن لم يكن هناك تغيير)"
+          else
+            echo "ليس أول الشهر — لا حاجة لتعديل."
+          fi
